@@ -42,16 +42,23 @@ struct recordEditTag
 };
 
 void getString(question150 ptr);
-void displayMainMenu(void);
+
 void displayExistingRecord(struct recordTag main);
 void displaySuccessAdded(void);
 void displaySuccessEdited(void);
+void displaySuccessDeleted(void);
+
 int addRecord(struct recordTag *main, struct recordAddTag A, int i);
-void printRecord(struct recordTag *main, int i);
 void editRecord(struct recordTag *main, int ctr);
+int deleteRecord(struct recordTag *main, int ctr);
+
+
+void displayMainMenu(void);
 void displayManageData(void);
 int displayPlay();
 int displayExit(int nExitChoice);
+
+void printRecord(struct recordTag *main, int i);
 
 int
 main()
@@ -80,50 +87,16 @@ getString(question150 ptr)
     }while (i < 150 && ch != '\n');
 }
 
+
 void
-displayMainMenu()
+displayInvalidChoice()
 {
-    int nMenuChoice;
-    int nExit = 0;
-    int nExitChoice = 0;
     int nBack;
 
-    do
-    {
-        system("clear");
-        printf("\n");
-        printf("MAIN MENU\n");
-        printf("\n");
-        printf("%s\n", "[1] Manage Data");
-        printf("%s\n", "[2] Play");
-        printf("%s\n", "[3] Exit");
-        printf("\n");
-
-        printf("Enter choice: ");
-        scanf("%d", &nMenuChoice);
-
-        switch(nMenuChoice)
-        {
-            case 1:
-                displayManageData();
-                break;
-            case 2:
-                displayPlay();
-                break;
-            case 3:
-                nExit = displayExit(nExitChoice);
-                break;
-            default:
-                printf("INVALID INPUT\n");
-                printf("Enter any key to go back... ");
-                scanf("%d", &nBack);
-        }
-
-    }while(nExit != 1);
-    
-    printf("Program terminated.\n");
+    printf("You have entered an invalid choice.\n");
+    printf("Press any key to go back...");
+    scanf("%d", &nBack);
 }
-
 void
 displayExistingRecord(struct recordTag main)
 {
@@ -161,13 +134,22 @@ displaySuccessEdited()
     scanf("%d", &nBack);
 }
 
+void
+displaySuccessDeleted()
+{
+    int nBack;
+
+    printf("\nSUCCESSFULLY DELETED!\n");
+    printf("Press any key to go back... ");
+    scanf("%d", &nBack);
+}
+
 int
 addRecord(struct recordTag *main, struct recordAddTag A, int i)
 {
     char c;
     int n = 1;
     int nContinue = 0;
-    int z = 1;
 
     FILE *fp;
 
@@ -221,29 +203,11 @@ addRecord(struct recordTag *main, struct recordAddTag A, int i)
 }
 
 void
-printRecord(struct recordTag *main, int i)
-{
-    FILE *fp;
-
-    fp = fopen("records.txt", "a");
-    fprintf(fp, "%s\n", main[i].topic);
-    fprintf(fp, "%d\n", main[i].num);
-    fprintf(fp, "%s\n", main[i].question);
-    fprintf(fp, "%s\n", main[i].choice1);
-    fprintf(fp, "%s\n", main[i].choice2);
-    fprintf(fp, "%s\n", main[i].choice3);
-    fprintf(fp, "%s\n", main[i].answer);
-    fprintf(fp, "\n");
-    fclose(fp);
-}
-
-void
 editRecord(struct recordTag *main, int ctr)
 {
     int nTopicChoice;
     int nFound;
     int nChoice;
-    int nBack;
     char topics[20][21]; // maximum 20 topics with 20 letters
     int nTopics;
     int j;
@@ -410,6 +374,9 @@ editRecord(struct recordTag *main, int ctr)
                         printf("NEW ANSWER: %s\n", main[index].answer);
                         displaySuccessEdited();
                         break;
+                default:
+                    displayInvalidChoice();
+                    break;
             }
         }
         // this nested for loop makes the 2-D array topics empty
@@ -417,6 +384,189 @@ editRecord(struct recordTag *main, int ctr)
             strcpy(topics[i], "\0");
 
     } while(nStop == 0);
+}
+
+int 
+deleteRecord(struct recordTag *main, int ctr)
+{
+    int nTopicChoice;
+    int nFound;
+    int nChoice;
+    char topics[20][21]; // maximum 20 topics with 20 letters
+    int nTopics;
+    int j;
+    int kLast; // last number of unique topics 
+    int index; // the index of the record to be edited
+    int nDeleteChoice; 
+    int nStop = 0; // this stops the do-while loop and returns back to MANAGE DATA 
+    struct recordTag temp;
+    int nQuestionNum; // this resets the question number per topic 
+    int nDelete = 0; // this counts how many records were deleted
+
+    do
+    {
+        nTopics = 0;
+        kLast = 0;
+
+        system("clear");
+        printf("DELETE A RECORD\n");
+        for (int i = 0; i < ctr; i++) 
+        {
+            nFound = 0;
+            j = 0;
+            while(!nFound && j < nTopics)
+            {
+                if(strcmp(main[i].topic, topics[j]) == 0)
+                    nFound = 1;
+                j++;
+            }
+            if(!nFound)
+            {
+                strcpy(topics[nTopics], main[i].topic);
+                nTopics++;
+            }
+        }
+
+        printf("TOPICS: \n");
+        for(int k = 0; k < nTopics; k++)
+        {
+            printf("[%d] %s\n", k+1, topics[k]);
+            kLast = k + 2;
+        }
+        printf("[%d] Back to MANAGE DATA\n", kLast);
+
+        printf("\nPlease choose a topic: ");
+        scanf("%d", &nTopicChoice);
+
+        if(nTopicChoice == kLast)
+        {
+            nStop = 1;
+        }
+        else
+        {
+            printf("QUESTIONS: \n");
+            
+            // bubble sort to arrange question number in ascending 
+            for(int i = 0; i < ctr-1; i++) 
+            {
+                for(int j = 0; j < ctr-i-1; j++) 
+                {
+                    if(main[j].num > main[j+1].num) 
+                    {
+                        // swap main[j] and main[j+1]
+                        temp = main[j];
+                        main[j] = main[j+1];
+                        main[j+1] = temp;
+                    }
+                }
+            }
+
+            nQuestionNum = 1;
+            for(int k = 0; k < ctr; k++)
+            {
+                if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                {
+                    printf("[%d] ", nQuestionNum);
+                    printf("%s\n", main[k].question);
+                    main[k].num = nQuestionNum;
+                    nQuestionNum++;
+                }
+            }
+
+            printf("\nPlease choose which number to delete: ");
+            scanf("%d", &nChoice);
+
+            for(int z = 0; z < ctr; z++)
+            {
+                if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
+                    index = z;
+            }
+
+            printf("CHOSEN RECORD: \n");
+            printf("[1] TOPIC: %s\n", main[index].topic);
+            printf("[2] QUESTION: %s\n", main[index].question);
+            printf("[3] CHOICE 1: %s\n", main[index].choice1);
+            printf("[4] CHOICE 2: %s\n", main[index].choice2);
+            printf("[5] CHOICE 3: %s\n", main[index].choice3);
+            printf("[6] ANSWER: %s\n", main[index].answer);
+
+            printf("\nDelete this record?: \n");
+            printf("[1] YES\n");
+            printf("[2] NO\n");
+            printf("Please enter your choice:");
+            scanf("%d", &nDeleteChoice);
+
+            switch(nDeleteChoice)
+            {
+                case 1:
+                    strcpy(main[index].topic, "\0");
+                    main[index].num = -1;
+                    strcpy(main[index].question, "\0");
+                    strcpy(main[index].choice1, "\0");
+                    strcpy(main[index].choice2, "\0");
+                    strcpy(main[index].choice3, "\0");
+                    strcpy(main[index].answer, "\0");
+                    nStop = 1;
+                    nDelete++;
+                    displaySuccessDeleted();
+                    break;
+                case 2:
+                    break;
+                default:
+                    displayInvalidChoice();
+                    break;
+            }
+        }
+        // this nested for loop makes the 2-D array topics empty
+        for (int i = 0; i < 20; i++) 
+            strcpy(topics[i], "\0");
+
+    } while(nStop == 0);
+    return nDelete;
+}
+
+void
+displayMainMenu()
+{
+    int nMenuChoice;
+    int nExit = 0;
+    int nExitChoice = 0;
+    int nBack;
+
+    do
+    {
+        system("clear");
+        printf("\n");
+        printf("MAIN MENU\n");
+        printf("\n");
+        printf("%s\n", "[1] Manage Data");
+        printf("%s\n", "[2] Play");
+        printf("%s\n", "[3] Exit");
+        printf("\n");
+
+        printf("Enter choice: ");
+        scanf("%d", &nMenuChoice);
+
+        switch(nMenuChoice)
+        {
+            case 1:
+                displayManageData();
+                break;
+            case 2:
+                displayPlay();
+                break;
+            case 3:
+                nExit = displayExit(nExitChoice);
+                break;
+            default:
+                printf("INVALID INPUT\n");
+                printf("Enter any key to go back... ");
+                scanf("%d", &nBack);
+        }
+
+    }while(nExit != 1);
+    
+    printf("Program terminated.\n");
 }
 
 void
@@ -430,9 +580,10 @@ displayManageData()
     int nChoice = 0;
     int nBack = 0;
     int i = 0; // index for recordMain
-    int n = 0; // returns 0 if record is existing, returns 1 if record is added
+    int nAdd = 0; // returns 0 if record is existing, returns 1 if record is added
     int ctr = 0; // counter for how many records has been stored 
     char c;
+    int nDelete = 0; // return 0 if no record was deleted, returns the number of records deleted
 
     struct recordTag recordMain[20];
     struct recordAddTag record;
@@ -482,24 +633,33 @@ displayManageData()
             switch(nChoice)
             {
                 case 1:
+                    // ADD A RECORD
                     system("clear");
                     printf("ADD A RECORD\n");
-                    n = addRecord(recordMain, record, i); // returns 0 if record is existing, returns 1 if record is added 
-                    if(n != 0 && ctr < 20) // if record is added, it will enter this condition 
+                    nAdd = addRecord(recordMain, record, i); // returns 0 if record is existing, returns 1 if record is added 
+                    if(nAdd != 0 && ctr < 20) // if record is added, it will enter this condition 
                     {
-                        printRecord(recordMain, i);
-                        i += 1;
-                        ctr += 1;
+                        i++;
+                        ctr++;
                     }
+                    printRecord(recordMain, ctr);
                     break;
                 case 2:
+                    // EDIT A RECORD
                     system("clear");
                     editRecord(recordMain, ctr);
+                    printRecord(recordMain, ctr);
                     break;
                 case 3:
-                    printf("DELETE A RECORD\n");
+                    // DELETE A RECORD
+                    nDelete = deleteRecord(recordMain, ctr);
+                    if(nDelete != 0)
+                        ctr -= nDelete;
+                    printRecord(recordMain, ctr);
                     break;
                 case 4:
+                    // IMPORT DATA
+                    
                     printf("IMPORT DATA\n");
                     break;
                 case 5:
@@ -556,4 +716,27 @@ displayExit(int nExitChoice)
     }while(nExitChoice != 1);
    
     return nExitChoice;
+}
+
+
+void
+printRecord(struct recordTag *main, int ctr)
+{
+    FILE *fp;
+
+    fp = fopen("records.txt", "a");
+    for(int i = 0; i < ctr; i++)
+    {
+        fprintf(fp, "%s\n", main[i].topic);
+        fprintf(fp, "%d\n", main[i].num);
+        fprintf(fp, "%s\n", main[i].question);
+        fprintf(fp, "%s\n", main[i].choice1);
+        fprintf(fp, "%s\n", main[i].choice2);
+        fprintf(fp, "%s\n", main[i].choice3);
+        fprintf(fp, "%s\n", main[i].answer);
+        fprintf(fp, "\n");
+    }
+
+    fprintf(fp, "------\n");
+    fclose(fp);
 }
