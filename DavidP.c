@@ -30,10 +30,22 @@ struct recordAddTag
     int addNum;
 };
 
+struct recordEditTag
+{
+    topic20 editTopic;
+    question150 editQuestion;
+    choice30 editChoice1;
+    choice30 editChoice2;
+    choice30 editChoice3;
+    answer30 editAnswer;
+
+};
 
 void getString(question150 ptr);
 void displayMainMenu(void);
-void displayExistingRecord(void);
+void displayExistingRecord(struct recordTag main);
+void displaySuccessAdded(void);
+void displaySuccessEdited(void);
 int addRecord(struct recordTag *main, struct recordAddTag A, int i);
 void printRecord(struct recordTag *main, int i);
 void editRecord(struct recordTag *main, int ctr);
@@ -113,12 +125,39 @@ displayMainMenu()
 }
 
 void
-displayExistingRecord()
+displayExistingRecord(struct recordTag main)
 {
     int nBack;
 
-    printf("Question and answer are already existing in the records.\n");
+    printf("TOPIC: %s\n", main.topic);
+    printf("QUESTION: %s\n", main.question);
+    printf("CHOICE 1: %s\n", main.choice1);
+    printf("CHOICE 2: %s\n", main.choice2);
+    printf("CHOICE 3: %s\n", main.choice3);
+    printf("ANSWER: %s\n", main.answer);
+
+    printf("\nRECORD ALREADY EXISTS.\n");
     printf("Enter any key to go back...\n");
+    scanf("%d", &nBack);
+}
+
+void
+displaySuccessAdded()
+{
+    int nBack;
+
+    printf("\nSUCCESSFULLY ADDED!\n");
+    printf("Press any key to go back... ");
+    scanf("%d", &nBack);
+}
+
+void
+displaySuccessEdited()
+{
+    int nBack;
+
+    printf("\nSUCCESSFULLY CHANGED!\n");
+    printf("Press any key to go back... ");
     scanf("%d", &nBack);
 }
 
@@ -142,9 +181,10 @@ addRecord(struct recordTag *main, struct recordAddTag A, int i)
 
     for(int j = 0; j < 20; j++)
     {
-        if(strcmp(A.addAnswer, main[j].answer) == 0)
+        if(strcmp(A.addQuestion, main[j].question) == 0)
         {
-            displayExistingRecord();
+            system("clear");
+            displayExistingRecord(main[j]);
             nContinue = 1;
             n = 0;
         }    
@@ -172,6 +212,8 @@ addRecord(struct recordTag *main, struct recordAddTag A, int i)
         strcpy(main[i].choice2, A.addChoice2);
         strcpy(main[i].choice3, A.addChoice3);
         strcpy(main[i].answer, A.addAnswer);
+
+        displaySuccessAdded();
     }
 
     fclose(fp);
@@ -198,35 +240,183 @@ printRecord(struct recordTag *main, int i)
 void
 editRecord(struct recordTag *main, int ctr)
 {
-    int nChoice;
+    int nTopicChoice;
     int nFound;
+    int nChoice;
+    int nBack;
     char topics[20][21]; // maximum 20 topics with 20 letters
-    int nTopics = 0;
+    int nTopics;
+    int j;
+    int kLast; // last number of unique topics 
+    int index; // the index of the record to be edited
+    int nEditChoice; 
+    struct recordEditTag edit; // this will store the edited record
+    int nStop = 0; // this stops the do-while loop and returns back to MANAGE DATA 
+    int ctrQuestion; // this counts how many questions there are under a topic
+    int nStopQuestion; // this stops the do-while loop if the question has no duplicate
+    struct recordTag temp;
+    int nQuestionNum; // this resets the question number per topic 
 
-    for (int j = 0; j < ctr; j++) 
+    do
     {
-        nFound = 0;
-        for(int k = 0; k < ctr; k++)
+        nTopics = 0;
+        kLast = 0;
+        ctrQuestion = 0;
+        nStopQuestion = 0;
+
+        system("clear");
+        printf("EDIT A RECORD\n");
+        for (int i = 0; i < ctr; i++) 
         {
-            if(nFound == 0)
+            nFound = 0;
+            j = 0;
+            while(!nFound && j < nTopics)
             {
-                if(strcmp(main[j].topic, main[k].topic) == 0)
+                if(strcmp(main[i].topic, topics[j]) == 0)
                     nFound = 1;
+                j++;
+            }
+            if(!nFound)
+            {
+                strcpy(topics[nTopics], main[i].topic);
+                nTopics++;
             }
         }
-        if(!nFound)
+
+        printf("TOPICS: \n");
+        for(int k = 0; k < nTopics; k++)
         {
-            strcpy(topics[nTopics], main[j]. topic);
-            nTopics++;
+            printf("[%d] %s\n", k+1, topics[k]);
+            kLast = k + 2;
         }
-    }
+        printf("[%d] Back to MANAGE DATA\n", kLast);
 
-    printf("TOPICS: \n");
-    for(int z = 0; z < nTopics; z++)
-        printf("%s\n", topics[z]);
+        printf("\nPlease choose a topic: ");
+        scanf("%d", &nTopicChoice);
 
-    printf("\nPlease choose a topic: ");
-    scanf("%d", &nChoice);
+        if(nTopicChoice == kLast)
+        {
+            nStop = 1;
+        }
+        else
+        {
+            printf("QUESTIONS: \n");
+            
+            // bubble sort to arrange question number in ascending 
+            for(int i = 0; i < ctr-1; i++) 
+            {
+                for(int j = 0; j < ctr-i-1; j++) 
+                {
+                    if(main[j].num > main[j+1].num) 
+                    {
+                        // swap main[j] and main[j+1]
+                        temp = main[j];
+                        main[j] = main[j+1];
+                        main[j+1] = temp;
+                    }
+                }
+            }
+
+            nQuestionNum = 1;
+            for(int k = 0; k < ctr; k++)
+            {
+                if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                {
+                    printf("[%d] ", nQuestionNum);
+                    printf("%s\n", main[k].question);
+                    main[k].num = nQuestionNum;
+                    nQuestionNum++;
+                }
+            }
+
+            printf("\nPlease choose which number to edit: ");
+            scanf("%d", &nChoice);
+
+            for(int z = 0; z < ctr; z++)
+            {
+                if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
+                    index = z;
+            }
+
+            printf("CHOSEN RECORD: \n");
+            printf("[1] TOPIC: %s\n", main[index].topic);
+            printf("[2] QUESTION: %s\n", main[index].question);
+            printf("[3] CHOICE 1: %s\n", main[index].choice1);
+            printf("[4] CHOICE 2: %s\n", main[index].choice2);
+            printf("[5] CHOICE 3: %s\n", main[index].choice3);
+            printf("[6] ANSWER: %s\n", main[index].answer);
+
+            printf("\nPlease choose a field to be modified: ");
+            scanf("%d", &nEditChoice);
+
+            switch(nEditChoice)
+            {
+                case 1:
+                    printf("Enter NEW TOPIC: ");
+                    scanf("%s", edit.editTopic);
+                    strcpy(main[index].topic, edit.editTopic);
+                    for(int r = 0; r < ctr; r++)
+                    {
+                        if(strcmp(main[index].topic, main[r].topic) == 0)
+                            ctrQuestion++;
+                        main[index].num = ctrQuestion;
+                    }
+                    printf("NEW TOPIC: %s\n", main[index].topic);
+                    displaySuccessEdited();
+                    break;
+                case 2:
+                    do
+                    {
+                        printf("Enter NEW QUESTION: ");
+                        getString(edit.editQuestion);
+                        for(int x = 0; x < ctr; x++)
+                        {
+                            if(strcmp(edit.editQuestion, main[x].question) == 0)
+                            {
+                                displayExistingRecord(main[x]);
+                                nStopQuestion = 1;
+                            }
+                        }
+                    } while(nStopQuestion == 1);
+                    strcpy(main[index].question, edit.editQuestion);
+                    printf("NEW QUESTION: %s\n", main[index].question);
+                    displaySuccessEdited();
+                    break;
+                case 3:
+                    printf("Enter NEW CHOICE 1: ");
+                    scanf("%s", edit.editChoice1);
+                    strcpy(main[index].choice1, edit.editChoice1);
+                    printf("NEW CHOICE 1: %s\n", main[index].choice1);
+                    displaySuccessEdited();
+                    break;
+                case 4:
+                    printf("Enter NEW CHOICE 2: ");
+                    scanf("%s", edit.editChoice2);
+                    strcpy(main[index].choice2, edit.editChoice2);
+                    printf("NEW CHOICE 2: %s\n", main[index].choice2);
+                    displaySuccessEdited();
+                    break;
+                case 5:
+                    printf("Enter NEW CHOICE 3: ");
+                    scanf("%s", edit.editChoice3);
+                    strcpy(main[index].choice3, edit.editChoice3);
+                    printf("NEW CHOICE 3: %s\n", main[index].choice3);
+                    displaySuccessEdited();
+                    break;
+                case 6:
+                    printf("Enter NEW ANSWER: ");
+                        scanf("%s", edit.editAnswer);
+                        strcpy(main[index].answer, edit.editAnswer);
+                        printf("NEW ANSWER: %s\n", main[index].answer);
+                        displaySuccessEdited();
+                        break;
+            }
+        }
+        // this nested for loop makes the 2-D array topics empty
+        for (int i = 0; i < 20; i++) 
+            strcpy(topics[i], "\0");
+
+    } while(nStop == 0);
 }
 
 void
@@ -304,7 +494,6 @@ displayManageData()
                     break;
                 case 2:
                     system("clear");
-                    printf("EDIT A RECORD\n");
                     editRecord(recordMain, ctr);
                     break;
                 case 3:
