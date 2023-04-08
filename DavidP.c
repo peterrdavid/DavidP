@@ -60,6 +60,8 @@ void displayExistingRecord(struct recordTag main);
 void displaySuccessAdded(void);
 void displaySuccessEdited(void);
 void displaySuccessDeleted(void);
+void displaySuccessImported(void);
+void displaySuccessExported(void);
 
 int addRecord(struct recordTag *main, struct recordAddTag A, int i);
 void editRecord(struct recordTag *main, int ctr);
@@ -183,6 +185,25 @@ displaySuccessDeleted()
     scanf("%d", &nBack);
 }
 
+void
+displaySuccessImported()
+{
+    int nBack;
+
+    printf("\nSUCCESSFULLY IMPORTED!\n");
+    printf("Press any key to go back... ");
+    scanf("%d", &nBack);
+}
+
+void
+displaySuccessExported()
+{
+    int nBack;
+
+    printf("\nSUCCESSFULLY EXPORTED!\n");
+    printf("Press any key to go back... ");
+    scanf("%d", &nBack);
+}
 
 int
 addRecord(struct recordTag *main, struct recordAddTag A, int i)
@@ -643,11 +664,8 @@ importRecord(struct recordTag *main, int index)
             ctr++;
             index++;
         }
-        displaySuccessAdded();
+        displaySuccessImported();
     }
-
-
-    printRecordImport(main, ctr);
 
     fclose(fp);
     
@@ -657,8 +675,31 @@ importRecord(struct recordTag *main, int index)
 void
 exportRecord(struct recordTag *main, int ctr)
 {
-    
+    FILE *fp;
+    filename30 filename;
+
+    printf("Please enter file name: ");
+    scanf("%s", filename);
+
+    fp = fopen(filename, "w");
+
+    for(int i = 0; i < ctr; i++)
+    {
+        fprintf(fp, "%s\n", main[i].topic);
+        fprintf(fp, "%d\n", main[i].num);
+        fprintf(fp, "%s\n", main[i].question);
+        fprintf(fp, "%s\n", main[i].choice1);
+        fprintf(fp, "%s\n", main[i].choice2);
+        fprintf(fp, "%s\n", main[i].choice3);
+        fprintf(fp, "%s\n", main[i].answer);
+        fprintf(fp, "\n");
+    }
+
+    fclose(fp);
+
+    displaySuccessExported();
 }
+
 
 void
 displayMainMenu()
@@ -775,29 +816,26 @@ displayManageData()
                     nAdd = addRecord(recordMain, record, ctr); // returns 0 if record is existing, returns 1 if record is added 
                     if(nAdd != 0 && ctr < 20) // if record is added, it will enter this condition 
                         ctr++;
-                    printRecord(recordMain, ctr);
                     break;
                 case 2:
                     // EDIT A RECORD
                     system("clear");
                     editRecord(recordMain, ctr);
-                    printRecord(recordMain, ctr);
                     break;
                 case 3:
                     // DELETE A RECORD
                     nDelete = deleteRecord(recordMain, ctr); // returns 0 if no record deleted, returns the number of records deleted
                     if(nDelete != 0) // if record is deleted, it will enter this condition
                         ctr -= nDelete; // the number of records deleted will be subtracted from the total number of records 
-                    printRecord(recordMain, ctr);
                     break;
                 case 4:
                     // IMPORT DATA
                     nImport = importRecord(recordMain, ctr); // returns the number of records imported
                     ctr += nImport;
-                    printf("IMPORT DATA\n");
                     break;
                 case 5:
-                    printf("EXPORT DATA\n");
+                    // EXPORT DATA
+                    exportRecord(recordMain, ctr);
                     break;
                 case 6:
                     nStop2 = 1;
