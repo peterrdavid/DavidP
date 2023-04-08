@@ -6,6 +6,7 @@ typedef char topic20[21];
 typedef char question150[151];
 typedef char choice30[31];
 typedef char answer30[31];
+typedef char filename30[31];
 
 struct recordTag
 {
@@ -41,7 +42,19 @@ struct recordEditTag
 
 };
 
-void getString(question150 ptr);
+struct recordImportTag
+{
+    topic20 importTopic;
+    int importNum;
+    question150 importQuestion;
+    choice30 importChoice1;
+    choice30 importChoice2;
+    choice30 importChoice3;
+    answer30 importAnswer;
+};
+
+void getString(question150 question);
+void getFileString(FILE *fp, question150 tempQuestion);
 
 void displayExistingRecord(struct recordTag main);
 void displaySuccessAdded(void);
@@ -51,7 +64,8 @@ void displaySuccessDeleted(void);
 int addRecord(struct recordTag *main, struct recordAddTag A, int i);
 void editRecord(struct recordTag *main, int ctr);
 int deleteRecord(struct recordTag *main, int ctr);
-
+int importRecord(struct recordTag *main, int i);
+void exportRecord(struct recordTag *main, int ctr);
 
 void displayMainMenu(void);
 void displayManageData(void);
@@ -59,6 +73,7 @@ int displayPlay();
 int displayExit(int nExitChoice);
 
 void printRecord(struct recordTag *main, int i);
+void printRecordImport(struct recordTag *recordMain, int len);
 
 int
 main()
@@ -68,8 +83,9 @@ main()
     return 0;
 }
 
+
 void
-getString(question150 ptr)
+getString(question150 question)
 {
     char ch;
     int i = 0;
@@ -80,11 +96,33 @@ getString(question150 ptr)
 
         if(ch != '\n')
         {
-            ptr[i] = ch;
+            question[i] = ch;
             i++;
-            ptr[i] = '\0';
+            question[i] = '\0';
         }
     }while (i < 150 && ch != '\n');
+}
+
+void
+getFileString(FILE *fp, question150 tempQuestion)
+{
+    char ch;
+    int i = 0;
+    int nEnd;
+
+    do
+    {
+        nEnd = fscanf(fp, "%c", &ch);
+
+        if(i > 151 || ch == '\n')
+            nEnd = 0;
+        else
+        {
+            tempQuestion[i] = ch;
+            tempQuestion[i+1] = '\0';
+            i++;
+        }
+    }while (nEnd == 1);
 }
 
 
@@ -97,6 +135,7 @@ displayInvalidChoice()
     printf("Press any key to go back...");
     scanf("%d", &nBack);
 }
+
 void
 displayExistingRecord(struct recordTag main)
 {
@@ -143,6 +182,7 @@ displaySuccessDeleted()
     printf("Press any key to go back... ");
     scanf("%d", &nBack);
 }
+
 
 int
 addRecord(struct recordTag *main, struct recordAddTag A, int i)
@@ -220,6 +260,7 @@ editRecord(struct recordTag *main, int ctr)
     int nStopQuestion; // this stops the do-while loop if the question has no duplicate
     struct recordTag temp;
     int nQuestionNum; // this resets the question number per topic 
+    char ch;
 
     do
     {
@@ -250,7 +291,8 @@ editRecord(struct recordTag *main, int ctr)
         printf("TOPICS: \n");
         for(int k = 0; k < nTopics; k++)
         {
-            printf("[%d] %s\n", k+1, topics[k]);
+            if(strcmp(topics[k], "\0") != 0)
+                printf("[%d] %s\n", k+1, topics[k]);
             kLast = k + 2;
         }
         printf("[%d] Back to MANAGE DATA\n", kLast);
@@ -332,6 +374,7 @@ editRecord(struct recordTag *main, int ctr)
                     do
                     {
                         printf("Enter NEW QUESTION: ");
+                        scanf("%c", &ch);
                         getString(edit.editQuestion);
                         for(int x = 0; x < ctr; x++)
                         {
@@ -493,20 +536,22 @@ deleteRecord(struct recordTag *main, int ctr)
             printf("\nDelete this record?: \n");
             printf("[1] YES\n");
             printf("[2] NO\n");
-            printf("Please enter your choice:");
+            printf("Please enter your choice: ");
             scanf("%d", &nDeleteChoice);
 
             switch(nDeleteChoice)
             {
                 case 1:
-                    strcpy(main[index].topic, "\0");
-                    main[index].num = -1;
-                    strcpy(main[index].question, "\0");
-                    strcpy(main[index].choice1, "\0");
-                    strcpy(main[index].choice2, "\0");
-                    strcpy(main[index].choice3, "\0");
-                    strcpy(main[index].answer, "\0");
-                    nStop = 1;
+                    for(int i = index; i < ctr-1; i++)
+                    {
+                        strcpy(main[i].topic, main[i+1].topic);
+                        main[i].num = main[i+1].num;
+                        strcpy(main[i].question, main[i+1].question);
+                        strcpy(main[i].choice1, main[i+1].choice1);
+                        strcpy(main[i].choice2, main[i+1].choice2);
+                        strcpy(main[i].choice3, main[i+1].choice3);
+                        strcpy(main[i].answer, main[i+1].answer);
+                    }
                     nDelete++;
                     displaySuccessDeleted();
                     break;
@@ -522,7 +567,97 @@ deleteRecord(struct recordTag *main, int ctr)
             strcpy(topics[i], "\0");
 
     } while(nStop == 0);
+    
     return nDelete;
+}
+
+int
+importRecord(struct recordTag *main, int index)
+{
+
+    FILE *fp;
+    filename30 filename;
+    struct recordImportTag recordImport[20];
+    int ctr = 0;
+    int i = 0;
+    char ch;
+    int nStop = 1;
+    int nChoice;
+    int nGetInput = 0;
+
+    do
+    {
+        printf("Enter file name: ");
+        scanf("%s", filename);
+
+        fp = fopen(filename, "r");
+
+        if(fp == 0)
+        {
+            printf("File not found.\n");
+            printf("[1] Try again\n");
+            printf("[2] Back to MANAGE DATA\n");
+            scanf("%d", &nChoice);
+            switch(nChoice)
+            {
+                case 1: 
+                    nStop = 1;
+                    break;
+                case 2:
+                    nStop = 0;
+                    break;
+                default:
+                    printf("Invalid choice.\n");
+                    nStop = 1;
+                    break;
+            }
+        }
+        else
+        {
+            nStop = 0;
+            nGetInput = 1;
+        }
+    } while(nStop == 1);
+
+    if(nGetInput == 1)
+    {
+        while (!feof(fp) && i < 20)
+        {
+            fscanf(fp, "%s\n", recordImport[i].importTopic);
+            fscanf(fp, "%d\n", &recordImport[i].importNum);
+            getFileString(fp, recordImport[i].importQuestion);
+            fscanf(fp, "%s\n", recordImport[i].importChoice1);
+            fscanf(fp, "%s\n", recordImport[i].importChoice2);
+            fscanf(fp, "%s\n", recordImport[i].importChoice3);
+            fscanf(fp, "%s\n\n", recordImport[i].importAnswer);
+
+            strcpy(main[index].topic, recordImport[i].importTopic);
+            main[index].num = recordImport[i].importNum;
+            strcpy(main[index].question, recordImport[i].importQuestion);
+            strcpy(main[index].choice1, recordImport[i].importChoice1);
+            strcpy(main[index].choice2, recordImport[i].importChoice2);
+            strcpy(main[index].choice3, recordImport[i].importChoice3);
+            strcpy(main[index].answer, recordImport[i].importAnswer);
+
+            i++;
+            ctr++;
+            index++;
+        }
+        displaySuccessAdded();
+    }
+
+
+    printRecordImport(main, ctr);
+
+    fclose(fp);
+    
+    return ctr;
+}
+
+void
+exportRecord(struct recordTag *main, int ctr)
+{
+    
 }
 
 void
@@ -584,6 +719,7 @@ displayManageData()
     int ctr = 0; // counter for how many records has been stored 
     char c;
     int nDelete = 0; // return 0 if no record was deleted, returns the number of records deleted
+    int nImport = 0; // number of records imported
 
     struct recordTag recordMain[20];
     struct recordAddTag record;
@@ -636,12 +772,9 @@ displayManageData()
                     // ADD A RECORD
                     system("clear");
                     printf("ADD A RECORD\n");
-                    nAdd = addRecord(recordMain, record, i); // returns 0 if record is existing, returns 1 if record is added 
+                    nAdd = addRecord(recordMain, record, ctr); // returns 0 if record is existing, returns 1 if record is added 
                     if(nAdd != 0 && ctr < 20) // if record is added, it will enter this condition 
-                    {
-                        i++;
                         ctr++;
-                    }
                     printRecord(recordMain, ctr);
                     break;
                 case 2:
@@ -652,14 +785,15 @@ displayManageData()
                     break;
                 case 3:
                     // DELETE A RECORD
-                    nDelete = deleteRecord(recordMain, ctr);
-                    if(nDelete != 0)
-                        ctr -= nDelete;
+                    nDelete = deleteRecord(recordMain, ctr); // returns 0 if no record deleted, returns the number of records deleted
+                    if(nDelete != 0) // if record is deleted, it will enter this condition
+                        ctr -= nDelete; // the number of records deleted will be subtracted from the total number of records 
                     printRecord(recordMain, ctr);
                     break;
                 case 4:
                     // IMPORT DATA
-                    
+                    nImport = importRecord(recordMain, ctr); // returns the number of records imported
+                    ctr += nImport;
                     printf("IMPORT DATA\n");
                     break;
                 case 5:
@@ -739,4 +873,19 @@ printRecord(struct recordTag *main, int ctr)
 
     fprintf(fp, "------\n");
     fclose(fp);
+}
+
+void 
+printRecordImport(struct recordTag *recordMain, int len)
+{
+    for(int i = 0; i < len; i++)
+    {
+        printf("%s\n", recordMain[i].topic);
+        printf("%d\n", recordMain[i].num);
+        printf("%s\n", recordMain[i].question);
+        printf("%s\n", recordMain[i].choice1);
+        printf("%s\n", recordMain[i].choice2);
+        printf("%s\n", recordMain[i].choice3);
+        printf("%s\n\n", recordMain[i].answer);
+    }
 }

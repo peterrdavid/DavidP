@@ -1,120 +1,148 @@
-kpop
+KPop
 1
-what is love?
-itzy
-twice
-blackpink
-twice
+What is love?
+TWICE
+ITZY
+BLACKPINK
+TWICE
 
-politics
-1
-who is our president?
-leni
-isko
-marcos
-marcos
-
-kpop
+KPop
 2
-who sang omg?
-newjeans
-itzy
-twice
-newjeans
+Who sang OMG?
+NewJeans
+ITZY
+TWICE
+NewJeans
 
-politics
-2
-who is our vp?
-kiko
-sara
-duterte
-sara
-
-kpop
+Politics
 1
-what is love?
-twice
-itzy
-blackpink
-twice
+Who is the president?
+Marcos
+Sara
+Isko
+Marcos
 
-politics
-1
-who is our president?
-leni
-marcos
-isko
-marcos
-
-kpop
+Politics
 2
-who sang omg?
-itzy
-newjeans
-twice
-newjeans
+Who is the vice president?
+Sara
+Duterte
+Kiko
+Sara
 
-politics
-2
-who is our vp?
-sara
-kiko
-leni
-sara
+KPop
+3
+Who sang Mr. Rover?
+KAI
+JIMIN
+JISOO
+KAI
 
-kpop
+------
+KPop
 1
-what is love?
-twice
-itzy
-blackpink
-twice
+What is love?
+TWICE
+ITZY
+BLACKPINK
+TWICE
 
-politics
+Politics
 1
-who is pres?
-sara
-isko
-leni
-sara
+Who is the president?
+Marcos
+Sara
+Isko
+Marcos
 
-kpop
+KPop
 2
-who sang omg?
-newjeans
-itzy
-twice
-newjeans
+Who sang OMG?
+NewJeans
+ITZY
+TWICE
+NewJeans
 
-politics
+Politics
 2
-who is vp?
-sara
-kiko
-duterte
-sara
+Who is the vice president?
+Sara
+Duterte
+Kiko
+Sara
 
-kpop
+KPop
+3
+Who's solo is the best?
+KAI
+JIMIN
+JISOO
+KAI
+
+------
+KPop
 1
-what is love?
-twice
-itzy
-bp
-twice
+What is love?
+TWICE
+ITZY
+BLACKPINK
+TWICE
 
-politics
+Politics
 1
-who is our vp?
-sara
-kiko
-isko
-sara
+Who is the president?
+Marcos
+Sara
+Isko
+Marcos
 
-politics
+Politics
 2
-who is pres?
-marcos
-leni
-isko
-marcos
+Who is the vice president?
+Sara
+Duterte
+Kiko
+Sara
 
+KPop
+3
+Who's solo is the best?
+KAI
+JIMIN
+JISOO
+KAI
+
+------
+KPop
+1
+What is love?
+TWICE
+ITZY
+BLACKPINK
+TWICE
+
+Politics
+1
+Who is the president?
+Marcos
+Sara
+Isko
+Marcos
+
+Politics
+2
+Who is the vice president?
+Sara
+Duterte
+Kiko
+Sara
+
+KPop
+2
+Who's solo is the best?
+KAI
+JIMIN
+JISOO
+JISOO
+
+------
