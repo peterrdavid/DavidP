@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef char topic20[21];
 typedef char question150[151];
 typedef char choice30[31];
 typedef char answer30[31];
 typedef char filename30[31];
+typedef char name30[31];
 
 struct recordTag
 {
@@ -53,6 +55,13 @@ struct recordImportTag
     answer30 importAnswer;
 };
 
+struct scoreTag
+{
+    name30 playerName;
+    int playerScore;
+    int playerRow;
+};
+
 void getString(question150 question);
 void getFileString(FILE *fp, question150 tempQuestion);
 
@@ -62,20 +71,27 @@ void displaySuccessEdited(void);
 void displaySuccessDeleted(void);
 void displaySuccessImported(void);
 void displaySuccessExported(void);
+void displayFinalScore(FILE *fp, name30 playerName, int playerScore);
 
-int addRecord(struct recordTag *main, struct recordAddTag A, int i);
+int addRecord(struct recordTag *main, int i);
 void editRecord(struct recordTag *main, int ctr);
 int deleteRecord(struct recordTag *main, int ctr);
 int importRecord(struct recordTag *main, int i);
 void exportRecord(struct recordTag *main, int ctr);
 
+void displayPlay(FILE *fpScore, struct recordTag *main, int ctr);
+int displayTopics(struct recordTag *main, int ctr);
+void displayScores(FILE *fp);
+
 void displayMainMenu(void);
-void displayManageData(void);
-int displayPlay();
+int displayManageData(struct recordTag *recordMain);
+void displayPlayGame(struct recordTag *recordMain, int ctr);
 int displayExit(int nExitChoice);
 
 void printRecord(struct recordTag *main, int i);
 void printRecordImport(struct recordTag *recordMain, int len);
+
+// MAIN function
 
 int
 main()
@@ -85,6 +101,7 @@ main()
     return 0;
 }
 
+// string functions
 
 void
 getString(question150 question)
@@ -127,6 +144,7 @@ getFileString(FILE *fp, question150 tempQuestion)
     }while (nEnd == 1);
 }
 
+// display functions
 
 void
 displayInvalidChoice()
@@ -205,9 +223,34 @@ displaySuccessExported()
     scanf("%d", &nBack);
 }
 
-int
-addRecord(struct recordTag *main, struct recordAddTag A, int i)
+void
+displayFinalScore(FILE *fp, name30 playerName, int playerScore)
 {
+    int nBack;
+
+    fp = fopen("score.txt", "a");
+
+    fprintf(fp, "%s\n", playerName);
+    fprintf(fp, "%d\n\n", playerScore);
+
+    fclose(fp);
+
+    system("clear");
+    printf("THANK YOU FOR PLAYING!\n");
+    printf("-----------------------\n");
+    printf("[PLAYER] %s, your final accumulated score is %d\n", playerName, playerScore);
+    printf("\n-----------------------\n");
+    printf("Enter any key to go back... ");
+    scanf("%d", &nBack);
+}
+
+// MANAGE DATA functions
+
+int
+addRecord(struct recordTag *main, int i)
+{
+    struct recordAddTag A;
+    A.addNum = 1;
     char c;
     int n = 1;
     int nContinue = 0;
@@ -601,7 +644,6 @@ importRecord(struct recordTag *main, int index)
     struct recordImportTag recordImport[20];
     int ctr = 0;
     int i = 0;
-    char ch;
     int nStop = 1;
     int nChoice;
     int nGetInput = 0;
@@ -700,6 +742,259 @@ exportRecord(struct recordTag *main, int ctr)
     displaySuccessExported();
 }
 
+// PLAY functions
+
+void 
+displayPlay(FILE *fpScore, struct recordTag *main, int ctr)
+{
+    name30 playerName;
+    int nStop = 0;
+    int playerScore = 0;
+    int nReturn;
+
+    system("clear");
+    printf("QUIZ GAME\n");
+    printf("-----------------------\n");
+    printf("Enter player's name: ");
+    scanf("%s", playerName);
+
+    do
+    {
+        nReturn = 0;
+        system("clear");
+        printf("QUIZ GAME\n");
+        printf("-----------------------\n");
+        printf("SCORE: \n");
+        printf("[PLAYER] %s: %d\n", playerName, playerScore);
+        printf("-----------------------\n");
+        printf("Enter [0] to END GAME\n");
+        printf("-----------------------\n");
+
+        printf("TOPICS:\n");
+        nReturn = displayTopics(main, ctr); // returns 0 if incorrect answer, returns 1 if correct answer, returns 2 if end game
+        if(nReturn == 1)
+            playerScore++;
+        else if(nReturn == 2)
+        {
+            displayFinalScore(fpScore, playerName, playerScore);
+            nStop = 1;
+        }
+
+    } while (nStop == 0);
+}
+
+int
+displayTopics(struct recordTag *main, int ctr)
+{
+    int nFound;
+    int nTopics = 0;
+    char topics[20][21];
+    int j;
+    int nTopicChoice;
+    int ctrQuestion; // this counts how many questions there are under the chosen topic
+    int randomQuestion;
+    int nQuestion;
+    char cAnswer;
+    answer30 answer;
+    struct recordTag temp;
+    int nReturn = 0;
+    int nBack;
+    int index = 0; // this gets the index of the random question 
+    srand(time(NULL));
+    int nContinue;
+    int nStop = 0;
+
+    // this for-loop gets all the unique topics and stores them to the array topics[20][21]
+    for (int i = 0; i < ctr; i++) 
+    {
+        nFound = 0;
+        j = 0;
+        while(!nFound && j < nTopics)
+        {
+            if(strcmp(main[i].topic, topics[j]) == 0)
+                nFound = 1;
+            j++;
+        }
+        if(!nFound)
+        {
+            strcpy(topics[nTopics], main[i].topic);
+            nTopics++;
+        }
+    }
+
+    // this prints all the unique topics
+    for(int k = 0; k < nTopics; k++)
+    {
+        if(strcmp(topics[k], "\0") != 0)
+            printf("[%d] %s\n", k+1, topics[k]);
+    }
+    
+    do
+    {
+        printf("-----------------------\n");
+        printf("Please choose a topic: ");
+        scanf("%d", &nTopicChoice);
+        
+        // if player enters 0, it will terminate the do-while loop and return 2
+        if(nTopicChoice == 0)
+        {
+            nReturn = 2;
+            nStop = 1; // this terminates the do-while loop
+        }
+
+        // if player enters a valid topic choice, it will enter this condition
+        else if(nTopicChoice > 0 && nTopicChoice <= nTopics)
+        {
+            ctrQuestion = 0;
+            // this for-loop count the number of questions under the chosen topic
+            for(int k = 0; k < ctr; k++)
+            {
+                if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                    ctrQuestion++;
+            }
+
+            randomQuestion = rand() % ctrQuestion + 1; // this generates the random question number to be answered
+
+            // this for-loop dislays the random question and gets the answer to check if it's correct or not
+            nQuestion = 0;
+            for(int k = 0; k < ctr; k++)
+            {
+                if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                {
+                     nQuestion++;
+                    if(nQuestion == randomQuestion)
+                    {
+                        printf("%s\n", main[k].question);
+                        printf("CHOICES:\n");
+                        printf("[A] %s\n", main[k].choice1);
+                        printf("[B] %s\n", main[k].choice2);
+                        printf("[C] %s\n", main[k].choice3);
+                        index = k;
+                    }
+                }
+            }
+            // this do-while loop will only terminate once the user inputs a valid answer
+            do
+            {        
+                printf("-----------------------\n");
+                printf("Please enter your answer: ");
+                scanf(" %c", &cAnswer);
+                if(cAnswer != 'A' && cAnswer != 'B' && cAnswer != 'C' && cAnswer != '0')
+                    printf("INVALID ANSWER! Try again.\n");
+            } while(cAnswer != 'A' && cAnswer != 'B' && cAnswer != 'C' && cAnswer != '0');
+
+            switch(cAnswer)
+            {
+                case 'A':
+                    if(strcmp(main[index].choice1, main[index].answer) == 0)
+                    {
+                        printf("\nNice, your answer is CORRECT!\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                        nReturn = 1;
+                    }
+                    else
+                    {
+                        printf("\nSorry, your answer is INCORRECT.\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                    }
+                    break;
+                case 'B':
+                    if(strcmp(main[index].choice2, main[index].answer) == 0)
+                    {
+                        printf("\nNice, your answer is CORRECT!\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                        nReturn = 1;
+                    }
+                    else
+                    {
+                        printf("\nSorry, your answer is INCORRECT.\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                    }
+                    break;
+                case 'C':
+                    if(strcmp(main[index].choice3, main[index].answer) == 0)
+                    {
+                        printf("\nNice, your answer is CORRECT!\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                        nReturn = 1;
+                    }
+                    else
+                    {
+                        printf("\nSorry, your answer is INCORRECT.\n");
+                        printf("Enter any key to continue... ");
+                        scanf("%d", &nContinue);
+                    }
+                    break;
+                case '0':
+                    nReturn = 2;
+                    break;
+            }
+            nStop = 1; // this terminates the do-while loop
+        }
+        
+        // if the player enters an invalid choice, it will enter this condition which will ask for an input again
+        else
+            printf("INVALID CHOICE! Try again.\n");
+    } while(nStop == 0);
+
+    return nReturn;
+}
+
+void 
+displayScores(FILE *fp)
+{
+    struct scoreTag score[20]; // up to 20 players
+    int ctr = 0; // this counts how many player name and scores have been stored
+    int i = 0;
+    int nBack;
+    struct scoreTag temp;
+
+    fp = fopen("score.txt", "r");
+
+    while (!feof(fp) && i < 20)
+    {
+        fscanf(fp, "%s\n", score[i].playerName);
+        fscanf(fp, "%d\n\n", &score[i].playerScore);
+        score[i].playerRow = i + 1;
+        ctr++;
+        i++;
+    }
+
+    fclose(fp);
+
+    // bubble sort to arrange player score in decreasing
+    for(int i = 0; i < ctr; i++) 
+    {
+        for(int j = i + 1; j < ctr; j++) 
+        {
+            if(score[i].playerScore < score[j].playerScore) 
+            {
+                // swap 
+                temp = score[i];
+                score[i] = score[j];
+                score[j] = temp;
+            }
+        }
+    }
+
+    system("clear");
+    printf("SCOREBOARD\n\n");
+    printf("RANK    NAME    SCORE   ROW\n");
+    for(int j = 0; j < ctr; j++)
+    {
+        printf("[%d]    %s    %d   %d\n", j+1, score[j].playerName, score[j].playerScore, score[j].playerRow);
+    }
+    
+    printf("\nPress any key to go back... ");
+    scanf("%d", &nBack);
+}
+
+// MENU functions
 
 void
 displayMainMenu()
@@ -709,44 +1004,52 @@ displayMainMenu()
     int nExitChoice = 0;
     int nBack;
 
+    struct recordTag recordMain[20];
+    int ctr = 0;
+
     do
     {
         system("clear");
         printf("\n");
         printf("MAIN MENU\n");
-        printf("\n");
+        printf("-----------------------\n");
         printf("%s\n", "[1] Manage Data");
         printf("%s\n", "[2] Play");
         printf("%s\n", "[3] Exit");
-        printf("\n");
-
+        printf("-----------------------\n");
         printf("Enter choice: ");
         scanf("%d", &nMenuChoice);
 
         switch(nMenuChoice)
         {
             case 1:
-                displayManageData();
+                // MANAGE DATA
+                ctr = displayManageData(recordMain);
                 break;
             case 2:
-                displayPlay();
+                // PLAY
+                displayPlayGame(recordMain, ctr);
                 break;
             case 3:
-                nExit = displayExit(nExitChoice);
+                // EXIT
+                nExit = displayExit(nExitChoice); // returns 1 if players wants to terminate the program, returns 2 if otherwise
+                if(nExit == 2)
+                    nExit = 0;
                 break;
             default:
-                printf("INVALID INPUT\n");
+                // input is not in the choices
+                printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back... ");
                 scanf("%d", &nBack);
+                break;
         }
-
-    }while(nExit != 1);
+    }while(nExit == 0);
     
     printf("Program terminated.\n");
 }
 
-void
-displayManageData()
+int
+displayManageData(struct recordTag *recordMain)
 {
     char Password[6] = "peter";
     char Back[5] = "BACK";
@@ -755,16 +1058,11 @@ displayManageData()
     int nContinue = 0;
     int nChoice = 0;
     int nBack = 0;
-    int i = 0; // index for recordMain
     int nAdd = 0; // returns 0 if record is existing, returns 1 if record is added
     int ctr = 0; // counter for how many records has been stored 
     char c;
     int nDelete = 0; // return 0 if no record was deleted, returns the number of records deleted
     int nImport = 0; // number of records imported
-
-    struct recordTag recordMain[20];
-    struct recordAddTag record;
-    record.addNum = 1;
 
     FILE *fpRecord;
 
@@ -772,7 +1070,7 @@ displayManageData()
     
     do
     {
-        printf("Enter password: ");
+        printf("Please enter your password: ");
         scanf("%s", Input);
         
         if(strcmp(Input, Password) == 0)
@@ -797,14 +1095,15 @@ displayManageData()
             scanf("%c", &c);
             system("clear");
             printf("MANAGE DATA\n");
+            printf("-----------------------\n");
             printf("[1] Add a record\n");
             printf("[2] Edit a record\n");
             printf("[3] Delete a record\n");
             printf("[4] Import data\n");
             printf("[5] Export data\n");
             printf("[6] Back to MAIN MENU\n");
-            
-            printf("Enter choice: ");
+            printf("-----------------------\n");
+            printf("Pleas enter your choice: ");
             scanf("%d", &nChoice);
             
             switch(nChoice)
@@ -813,7 +1112,7 @@ displayManageData()
                     // ADD A RECORD
                     system("clear");
                     printf("ADD A RECORD\n");
-                    nAdd = addRecord(recordMain, record, ctr); // returns 0 if record is existing, returns 1 if record is added 
+                    nAdd = addRecord(recordMain, ctr); // returns 0 if record is existing, returns 1 if record is added 
                     if(nAdd != 0 && ctr < 20) // if record is added, it will enter this condition 
                         ctr++;
                     break;
@@ -841,7 +1140,7 @@ displayManageData()
                     nStop2 = 1;
                     break;
                 default:
-                    printf("INVALID INPUT\n");
+                    printf("\nINVALID INPUT!\n");
                     printf("Enter any key to go back... ");
                     scanf("%d", &nBack);
             }
@@ -849,13 +1148,59 @@ displayManageData()
     }
 
     fclose(fpRecord);
+
+    return ctr;
 }
 
-int
-displayPlay()
+void
+displayPlayGame(struct recordTag *recordMain, int ctr)
 {
+    int nChoice;
+    int nExit = 0;
+    int nExitChoice = 0;
+    int nBack;
+    char c;
 
-    return 0;
+    FILE *fpScore;
+
+    fpScore = fopen("score.txt", "a");
+
+    do
+    {
+        system("clear");
+        printf("PLAY GAME\n");
+        printf("-----------------------\n");
+        printf("[1] Play\n");
+        printf("[2] View Scores\n");
+        printf("[3] Exit\n");
+        printf("-----------------------\n");
+        printf("Please enter your choice: ");
+        scanf("%d", &nChoice);
+        switch(nChoice)
+
+        {
+            case 1:
+                // PLAY
+                displayPlay(fpScore, recordMain, ctr);
+                break;
+            case 2:
+                // VIEW SCORES
+                displayScores(fpScore);
+                break;
+            case 3:
+                // EXIT 
+                nExit = 1;
+                break;
+            default:
+                // input is not in the choices
+                printf("\nINVALID INPUT!\n");
+                printf("Enter any key to go back... ");
+                scanf("%d", &nBack);
+                break;
+        }
+    } while(nExit == 0);
+
+    fclose(fpScore);
 }
 
 int
@@ -867,8 +1212,11 @@ displayExit(int nExitChoice)
     do
     {
         system("clear");
+        printf("EXIT\n");
+        printf("-----------------------\n");
         printf("Are you sure you want to exit the program? \n");
         printf("[1] Yes   [2] No \n");
+        printf("-----------------------\n");
         printf("Enter choice: ");
         scanf("%d", &nChoice);
 
@@ -878,18 +1226,20 @@ displayExit(int nExitChoice)
                 nExitChoice = 1;
                 break;
             case 2:
-                nExitChoice = 1;
+                nExitChoice = 2;
                 break;
             default:
-                printf("INVALID INPUT\n");
+                printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back... ");
                 scanf("%d", &nBack);
+                break;
         }
-    }while(nExitChoice != 1);
+    }while(nExitChoice == 0);
    
     return nExitChoice;
 }
 
+// PRINT functions
 
 void
 printRecord(struct recordTag *main, int ctr)
