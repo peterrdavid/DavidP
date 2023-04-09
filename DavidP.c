@@ -1,3 +1,11 @@
+/***********************************************************************************************************
+This is to certify that this project is my own work, based on my personal efforts in studying and applying 
+the concepts learned. I have constructed the functions and their respective algorithms and corresponding 
+code by myself. The program was run, tested, and debugged by my own efforts. I further certify that I have 
+not copied in part or whole or otherwise plagiarized the work of other students and/or persons.
+                                                                     Peter Jan B. David, DLSU ID# 12275395 
+************************************************************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -89,9 +97,8 @@ int displayPlayGame(int index, struct recordTag *recordMain, int ctr);
 int displayExit(int nExitChoice);
 
 void printScores(struct scoreTag *score, int len);
-void printRecord(struct recordTag *main, int i);
 
-// MAIN function
+// MAIN FUNCTION
 
 int
 main()
@@ -101,8 +108,11 @@ main()
     return 0;
 }
 
-// string functions
+// GETSTRING FUNCTIONS
 
+/* getString takes string inputs with space characters 
+    @param question - where the string input will be stored
+*/
 void
 getString(question150 question)
 {
@@ -122,6 +132,10 @@ getString(question150 question)
     }while (i < 150 && ch != '\n');
 }
 
+/* getFileString takes string inputs with space characters from a file
+    @param *fp - the file to be scanned
+    @param tempQuestion - where the string input will be stored
+*/
 void
 getFileString(FILE *fp, question150 tempQuestion)
 {
@@ -144,18 +158,12 @@ getFileString(FILE *fp, question150 tempQuestion)
     }while (nEnd == 1);
 }
 
-// display functions
+// DISPLAY FUNCTIONS
 
-void
-displayInvalidChoice()
-{
-    int nBack;
-
-    printf("You have entered an invalid choice.\n");
-    printf("Press any key to go back...");
-    scanf("%d", &nBack);
-}
-
+/* displayExistingRecord displays the existing record 
+    @param main - the existing record to be displayed 
+    Pre-condition: the question entered already exists 
+*/
 void
 displayExistingRecord(struct recordTag main)
 {
@@ -174,6 +182,9 @@ displayExistingRecord(struct recordTag main)
     scanf("%d", &nBack);
 }
 
+/* displaySuccessAdded displays if adding a record was successful
+    Pre-condition: the record was added successfully
+*/
 void
 displaySuccessAdded()
 {
@@ -184,6 +195,9 @@ displaySuccessAdded()
     scanf("%d", &nBack);
 }
 
+/* displaySuccessEdited displays if edting a record was successful
+    Pre-condition: the record was edited successfully
+*/
 void
 displaySuccessEdited()
 {
@@ -194,6 +208,9 @@ displaySuccessEdited()
     scanf("%d", &nBack);
 }
 
+/* displaySuccessDeleted displays if deleted a record was successful
+    Pre-condition: the record was deleted successfully
+*/
 void
 displaySuccessDeleted()
 {
@@ -204,6 +221,9 @@ displaySuccessDeleted()
     scanf("%d", &nBack);
 }
 
+/* displaySuccessImported displays if importing data from a file was successful
+    Pre-condition: the data was imported successfully
+*/
 void
 displaySuccessImported()
 {
@@ -214,6 +234,9 @@ displaySuccessImported()
     scanf("%d", &nBack);
 }
 
+/* displaySuccessExported displays if exporting data to a file was successful
+    Pre-condition: the data was exported successfully
+*/
 void
 displaySuccessExported()
 {
@@ -224,6 +247,11 @@ displaySuccessExported()
     scanf("%d", &nBack);
 }
 
+/* displayFinalScore displays the final accumulated score of the player
+    @param playerName - the name of the current player
+    @param playerScore - the accumulated score of the current player
+    Pre-condition: the player ended the game
+*/
 void
 displayFinalScore(name30 playerName, int playerScore)
 {
@@ -241,22 +269,27 @@ displayFinalScore(name30 playerName, int playerScore)
     scanf("%d", &nBack);
 }
 
-// MANAGE DATA functions
+// MANAGE DATA FUNCTIONS
 
+/* addRecord displays the add feature under manage data
+    @param *main - where the added record will be stored
+    @param i - the index of the added record
+    @return n - 0 if record is already exists and 1 if a record is added
+    Pre-condition: the admin chose to add a record
+*/
 int
 addRecord(struct recordTag *main, int i)
 {
-    struct recordAddTag A;
-    A.addNum = 1;
-    char c;
+    struct recordAddTag A; // where the record to be added will be temporarily stored
     int n = 1;
     int nContinue = 0;
-
+    char c; 
+    A.addNum = 1; // initalize question number to 1
     FILE *fp;
 
     fp = fopen("records.txt", "r");
 
-    scanf("%c", &c);
+    scanf("%c", &c); 
     printf("Enter question: ");
     getString(A.addQuestion);
     printf("Enter answer: ");
@@ -264,6 +297,7 @@ addRecord(struct recordTag *main, int i)
 
     for(int j = 0; j < 20; j++)
     {
+        // this condition goes through every question stored in the main records to check for a duplicate
         if(strcmp(A.addQuestion, main[j].question) == 0)
         {
             system("clear");
@@ -272,11 +306,12 @@ addRecord(struct recordTag *main, int i)
             printf("ADD A RECORD\n");
             printf("----------------------------------------------------\n");
             displayExistingRecord(main[j]);
-            nContinue = 1;
-            n = 0;
+            nContinue = 1; // set nContinue to 1, thus the remaining inputs will not be asked
+            n = 0; // set n to 0 since no new record was added
         }    
     }
 
+    // if there is no duplicate, it will enter this condition
     if(nContinue == 0)
     {
         printf("Enter topic: ");
@@ -289,9 +324,11 @@ addRecord(struct recordTag *main, int i)
         printf("Enter choice 3: ");
         scanf("%s", A.addChoice3);
         for(int k = 0; k < 20; k++)
+            // if the added record has an existing topic, increment question number
             if(strcmp(A.addTopic, main[k].topic) == 0)
                 A.addNum++;
-
+        
+        // store the added record to the main record 
         strcpy(main[i].topic, A.addTopic);
         main[i].num = A.addNum;
         strcpy(main[i].question, A.addQuestion);
@@ -307,26 +344,31 @@ addRecord(struct recordTag *main, int i)
     return n;
 }
 
+/* editRecord displays the edit feature under manage data
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in the main 
+    Pre-condition: the admin chose to edit a record
+*/
 void
 editRecord(struct recordTag *main, int ctr)
 {
+    struct recordEditTag edit; // where the edited record will be temporarily stored
+    struct recordTag temp; // where the record will be temporarily stored when being sorted
     int nTopicChoice;
     int nFound;
     int nChoice;
-    char topics[20][21]; // maximum 20 topics with 20 letters
     int nTopics;
     int j;
     int kLast; // last number of unique topics 
     int index; // the index of the record to be edited
     int nEditChoice; 
-    struct recordEditTag edit; // this will store the edited record
     int nStop = 0; // this stops the do-while loop and returns back to MANAGE DATA 
     int ctrQuestion; // this counts how many questions there are under a topic
     int nStopQuestion; // this stops the do-while loop if the question has no duplicate
-    struct recordTag temp;
-    int nQuestionNum; // this resets the question number per topic 
+    int nQuestionNum; // this resets the question number per topic
+    int nBack; 
+    char topics[20][21]; // maximum 20 topics with 20 letters
     char ch;
-    int nBack;
 
     do
     {
@@ -341,6 +383,7 @@ editRecord(struct recordTag *main, int ctr)
         printf("EDIT A RECORD\n");
         printf("----------------------------------------------------\n");
 
+        // this for loop searches for the unique topics
         for (int i = 0; i < ctr; i++) 
         {
             nFound = 0;
@@ -348,22 +391,23 @@ editRecord(struct recordTag *main, int ctr)
             while(!nFound && j < nTopics)
             {
                 if(strcmp(main[i].topic, topics[j]) == 0)
-                    nFound = 1;
+                    nFound = 1; // if there is a duplicate, it will no longer be stored in the array topics
                 j++;
             }
             if(!nFound)
             {
                 strcpy(topics[nTopics], main[i].topic);
-                nTopics++;
+                nTopics++; // this counts the number of unique topics
             }
         }
 
         printf("TOPICS: \n");
+        // this for loop displays the unique topics
         for(int k = 0; k < nTopics; k++)
         {
             if(strcmp(topics[k], "\0") != 0)
                 printf("[%d] %s\n", k+1, topics[k]);
-            kLast = k + 2;
+            kLast = k + 2; // this gets the choice number for back to manage data
         }
         printf("[%d] Back to MANAGE DATA\n", kLast);
 
@@ -371,11 +415,13 @@ editRecord(struct recordTag *main, int ctr)
         printf("Enter topic: ");
         scanf("%d", &nTopicChoice);
 
-        // if user chooses back to manage data, it will go under this condition, which will terminate the do-while
+        // if the admin chooses back to manage data, it will go under this condition, which will terminate the do-while
         if(nTopicChoice == kLast)
         {
             nStop = 1;
         }
+        
+        // if the admin enters a valid choice, it will enter this condition
         else if(nTopicChoice > 0 && nTopicChoice < kLast)
         {
             do
@@ -403,16 +449,17 @@ editRecord(struct recordTag *main, int ctr)
                 }
 
                 nQuestionNum = 1;
+                // this for loop prints the questions under the chosen topic
                 for(int k = 0; k < ctr; k++)
-            {
-                if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
                 {
-                    printf("[%d] ", nQuestionNum);
-                    printf("%s\n", main[k].question);
-                    main[k].num = nQuestionNum;
-                    nQuestionNum++;
+                    if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                    {
+                        printf("[%d] ", nQuestionNum);
+                        printf("%s\n", main[k].question);
+                        main[k].num = nQuestionNum;
+                        nQuestionNum++;
+                    }
                 }
-            }
 
                 printf("----------------------------------------------------\n");
                 printf("Enter number to edit: ");
@@ -425,11 +472,14 @@ editRecord(struct recordTag *main, int ctr)
                 }
             } while(nChoice >= nQuestionNum || nChoice <= 0);
 
+            // this for loop gets the index of the chosen question
             for(int z = 0; z < ctr; z++)
             {
                 if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
                     index = z;
             }
+            
+            // this do-while loop displays the chosen record
             do
             {
                 system("clear");
@@ -465,8 +515,9 @@ editRecord(struct recordTag *main, int ctr)
                     strcpy(main[index].topic, edit.editTopic);
                     for(int r = 0; r < ctr; r++)
                     {
+                        // this condition checks if the new topic is existing
                         if(strcmp(main[index].topic, main[r].topic) == 0)
-                            ctrQuestion++;
+                            ctrQuestion++; // if existing, increment question number
                         main[index].num = ctrQuestion;
                     }
                     displaySuccessEdited();
@@ -480,6 +531,7 @@ editRecord(struct recordTag *main, int ctr)
                         getString(edit.editQuestion);
                         for(int x = 0; x < ctr; x++)
                         {
+                            // this condition checks if the new question is existing
                             if(strcmp(edit.editQuestion, main[x].question) == 0)
                             {
                                 printf("RECORD ALREADY EXISTS.\n");
@@ -516,36 +568,45 @@ editRecord(struct recordTag *main, int ctr)
                     break;
             }
         }
+       
+        // if the admin enters an invalid choice, it will enter this condition
         else
         {
             printf("\nINVALID INPUT!\n");
             printf("Enter any key to go back...\n");
             scanf("%d", &nBack);
         }
-        // this nested for loop makes the 2-D array topics empty
+        
+        // this nested for loop makes the array topics empty
         for (int i = 0; i < 20; i++) 
             strcpy(topics[i], "\0");
 
     } while(nStop == 0);
 }
 
+/* deleteRecord displays the delete feature under manage data
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in the main
+    @return nDelete - the number of records deleted 
+    Pre-condition: the admin chose to delete a record
+*/
 int 
 deleteRecord(struct recordTag *main, int ctr)
 {
+    struct recordTag temp; // where the record will be temporarily stored when being sorted
     int nTopicChoice;
     int nFound;
     int nChoice;
-    char topics[20][21]; // maximum 20 topics with 20 letters
     int nTopics;
     int j;
     int kLast; // last number of unique topics 
     int index; // the index of the record to be edited
     int nDeleteChoice; 
     int nStop = 0; // this stops the do-while loop and returns back to MANAGE DATA 
-    struct recordTag temp;
     int nQuestionNum; // this resets the question number per topic 
     int nDelete = 0; // this counts how many records were deleted
     int nBack;
+    char topics[20][21]; // maximum 20 topics with 20 letters
 
     do
     {
@@ -557,6 +618,8 @@ deleteRecord(struct recordTag *main, int ctr)
         printf("----------------------------------------------------\n");
         printf("DELETE A RECORD\n");
         printf("----------------------------------------------------\n");
+        
+        // this for loop searches for the unique topics
         for (int i = 0; i < ctr; i++) 
         {
             nFound = 0;
@@ -575,6 +638,7 @@ deleteRecord(struct recordTag *main, int ctr)
         }
 
         printf("TOPICS: \n");
+         // this for loop displays the unique topics
         for(int k = 0; k < nTopics; k++)
         {
             printf("[%d] %s\n", k+1, topics[k]);
@@ -591,6 +655,8 @@ deleteRecord(struct recordTag *main, int ctr)
         {
             nStop = 1;
         }
+
+        // if the admin enters a valid choice, it will enter this condition
         else if(nTopicChoice > 0 && nTopicChoice < kLast)
         {
             do
@@ -618,6 +684,7 @@ deleteRecord(struct recordTag *main, int ctr)
                 }
 
                 nQuestionNum = 1;
+                // this for loop prints the questions under the chosen topic
                 for(int k = 0; k < ctr; k++)
                 {
                     if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
@@ -640,11 +707,14 @@ deleteRecord(struct recordTag *main, int ctr)
                 }
             } while(nChoice >= nQuestionNum || nChoice <= 0);
 
+            // this for loop gets the index of the chosen record
             for(int z = 0; z < ctr; z++)
             {
                 if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
                     index = z;
             }
+            
+            // this do-while loop displays the chosen record
             do
             {
                 system("clear");
@@ -680,6 +750,7 @@ deleteRecord(struct recordTag *main, int ctr)
                 case 1:
                     for(int i = index; i < ctr-1; i++)
                     {
+                        // the subsequent records will be shifted and stored in the space previously occupied by the deleted record
                         strcpy(main[i].topic, main[i+1].topic);
                         main[i].num = main[i+1].num;
                         strcpy(main[i].question, main[i+1].question);
@@ -688,20 +759,23 @@ deleteRecord(struct recordTag *main, int ctr)
                         strcpy(main[i].choice3, main[i+1].choice3);
                         strcpy(main[i].answer, main[i+1].answer);
                     }
-                    nDelete++;
+                    nDelete++; // this increments each time a record is deleted
                     displaySuccessDeleted();
                     break;
                 case 2:
                     break;
             }
         }
+
+        // if the admin enters an invalid choice, it will enter this condition
         else
         {
             printf("\nINVALID INPUT!\n");
             printf("Enter any key to go back...\n");
             scanf("%d", &nBack);
         }
-        // this nested for loop makes the 2-D array topics empty
+        
+        // this nested for loop makes the array topics empty
         for (int i = 0; i < 20; i++) 
             strcpy(topics[i], "\0");
 
@@ -710,19 +784,24 @@ deleteRecord(struct recordTag *main, int ctr)
     return nDelete;
 }
 
+/* importRecord displays the delete feature under manage data
+    @param *main - where the imported data will be stored
+    @param index - the index after the last record stored in main
+    @return ctr - the number of records imported 
+    Pre-condition: the admin chose to import data
+*/
 int
 importRecord(struct recordTag *main, int index)
 {
-
-    FILE *fp;
-    filename30 filename;
-    struct recordImportTag recordImport[20];
+    struct recordImportTag recordImport[20]; // where the imported record will be temporarily stored, limited to 20 records
+    filename30 filename; // filename of where the data will be retrived
     int ctr = 0;
     int i = 0;
     int nStop = 1;
     int nChoice;
     int nGetInput = 0;
     int nBack;
+    FILE *fp;
 
     do
     {
@@ -736,6 +815,7 @@ importRecord(struct recordTag *main, int index)
 
         fp = fopen(filename, "r");
 
+        // if the file does not exist, it will enter this condition
         if(fp == 0)
         {
             printf("\nFile not found.\n");
@@ -762,6 +842,8 @@ importRecord(struct recordTag *main, int index)
                     break;
             }
         }
+
+        // if the file exists, it will enter this condition
         else
         {
             nStop = 0;
@@ -770,7 +852,8 @@ importRecord(struct recordTag *main, int index)
     } while(nStop == 1);
 
     if(nGetInput == 1)
-    {
+    {   
+        // this while loop scans the content of the file and stores to array recordImport
         while (!feof(fp) && i < 20)
         {
             fscanf(fp, "%s\n", recordImport[i].importTopic);
@@ -781,6 +864,7 @@ importRecord(struct recordTag *main, int index)
             fscanf(fp, "%s\n", recordImport[i].importChoice3);
             fscanf(fp, "%s\n\n", recordImport[i].importAnswer);
 
+            // this stores the imported record to main 
             strcpy(main[index].topic, recordImport[i].importTopic);
             main[index].num = recordImport[i].importNum;
             strcpy(main[index].question, recordImport[i].importQuestion);
@@ -801,11 +885,16 @@ importRecord(struct recordTag *main, int index)
     return ctr;
 }
 
+/* exportRecord displays the export feature under manage data
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in main
+    Pre-condition: the admin chose to export data
+*/
 void
 exportRecord(struct recordTag *main, int ctr)
 {
-    FILE *fp;
     filename30 filename;
+    FILE *fp;
 
     system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
@@ -818,6 +907,7 @@ exportRecord(struct recordTag *main, int ctr)
 
     fp = fopen(filename, "w");
 
+    // this for loop prints the records into the file
     for(int i = 0; i < ctr; i++)
     {
         fprintf(fp, "%s\n", main[i].topic);
@@ -835,20 +925,26 @@ exportRecord(struct recordTag *main, int ctr)
     displaySuccessExported();
 }
 
-// PLAY functions
+// PLAY FUNCTIONS
 
+/* displayPlay displays the play game feature under play
+    @param index - the index after last player stored in score
+    @param *score - where the information of the players are stored
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in main
+    @return nPlayer - 0 if the player is already exists and 1 if new player
+    Pre-condition: the admin chose to play game
+*/
 int 
 displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
 {
-    FILE *fpScore;
+
+    struct scoreTag temp; // where the information of the current player will be stored
     int nStop = 0;
     int nReturn;
     int nPlayer = 1;
     int nFound = 0; // this will change into 1 if a player is already existing in the records 
     int nPlayerIndex = 0; // index of the existing player
-
-
-    struct scoreTag temp;
     temp.playerScore = 0;
     temp.playerRow = index + 1;
 
@@ -874,11 +970,16 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
         printf("----------------------------------------------------\n");
 
         printf("TOPICS:\n");
-        nReturn = displayTopics(main, ctr); // returns 0 if incorrect answer, returns 1 if correct answer, returns 2 if end game
+        nReturn = displayTopics(main, ctr); // set to 0 if incorrect answer, set to 1 if correct answer, set to 2 if end game
+        
+        // if correct answer, enter this condition
         if(nReturn == 1)
-            temp.playerScore++;
+            temp.playerScore++; // increment player score
+        
+        // if player ends game, enter this condition
         else if(nReturn == 2)
         {
+            // this for loop checks if player already exists
             for(int i = 0; i < 20; i++)
             {
                 if(strcmp(temp.playerName, score[i].playerName) == 0)
@@ -887,19 +988,23 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
                     nPlayerIndex = i;
                 }
             }
+
+            // if player exists, enter this condition get accumulated score
             if(nFound == 1)
             {
                 score[nPlayerIndex].playerScore += temp.playerScore;
                 displayFinalScore(temp.playerName, score[nPlayerIndex].playerScore);
-                nPlayer = 0;
+                nPlayer = 0; // set to 0 since player exists
             }
+
+            // if player is new, enter this condition
             else
             {
                 strcpy(score[index].playerName, temp.playerName);
                 score[index].playerScore = temp.playerScore;
                 score[index].playerRow = temp.playerRow;
                 displayFinalScore(score[index].playerName, score[index].playerScore);
-                nPlayer = 1;
+                nPlayer = 1; // set to 1 since new player
             }
             nStop = 1;
         }
@@ -908,25 +1013,31 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
     return nPlayer;
 }
 
+/* displayTopics displays the questions and topics, and gets the answer of the player
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in main
+    @return nReturn - 0 if incorrect answer, 1 if correct answer, and 2 if end game
+    Pre-condition: the admin chose to play game
+*/
 int
 displayTopics(struct recordTag *main, int ctr)
 {
     int nFound;
     int nTopics = 0;
-    char topics[20][21];
     int j;
     int nTopicChoice;
     int ctrQuestion; // this counts how many questions there are under the chosen topic
     int randomQuestion;
     int nQuestion;
-    char cAnswer;
     int nReturn = 0;
     int index = 0; // this gets the index of the random question 
-    srand(time(NULL));
     int nContinue;
     int nStop = 0;
+    char topics[20][21]; // maximum 20 topics with 20 letters
+    char cAnswer;
+    srand(time(NULL)); // this generates a random number
 
-    // this for-loop gets all the unique topics and stores them to the array topics[20][21]
+    // this for-loop gets all the unique topics and stores them to the array topics
     for (int i = 0; i < ctr; i++) 
     {
         nFound = 0;
@@ -1055,13 +1166,14 @@ displayTopics(struct recordTag *main, int ctr)
                     }
                     break;
                 case '0':
-                    nReturn = 2;
+                    // if player ends game, it will enter here
+                    nReturn = 2; 
                     break;
             }
             nStop = 1; // this terminates the do-while loop
         }
         
-        // if the player enters an invalid choice, it will enter this condition which will ask for an input again
+        // if the player enters an invalid choice, it will enter this condition
         else
             printf("INVALID CHOICE! Try again.\n");
     } while(nStop == 0);
@@ -1069,18 +1181,23 @@ displayTopics(struct recordTag *main, int ctr)
     return nReturn;
 }
 
+/* displayScores displays the scoreboard, which shows their ranking
+    @param *score - where the information of the players are stored
+    Pre-condition: the admin chose to view scores
+*/
 void 
 displayScores(struct scoreTag *score)
 {
-    FILE *fp;
+    struct scoreTag temp;
     int ctr = 0; // this counts how many player name and scores have been stored
     int i = 0;
     int nBack;
-    struct scoreTag temp;
     int nContent = 0;
+    FILE *fp;
 
     fp = fopen("score.txt", "r");
 
+    // this while loop scans for the information of the players from the file
     while (!feof(fp) && i < 20)
     {
         fscanf(fp, "%s\n", score[i].playerName);
@@ -1105,9 +1222,10 @@ displayScores(struct scoreTag *score)
         }
     }
 
-    fseek(fp, 0, SEEK_END); // move to end of file
-    if (ftell(fp) != 0) // this checks if score.txt has content
-        nContent = 1; // if it has content, assign 1
+    // this checks if the file "score.txt" has content
+    fseek(fp, 0, SEEK_END);
+    if (ftell(fp) != 0) 
+        nContent = 1; // set to 1 if it has content
 
     system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
@@ -1115,6 +1233,7 @@ displayScores(struct scoreTag *score)
     printf("VIEW SCORE\n");
     printf("----------------------------------------------------\n");
     printf("%31s\n\n", "SCOREBOARD");
+    // if file has content, enter this condition
     if(nContent)
     {
         printf("     %-11s %-10s %10s %8s\n", "RANK", "NAME", "SCORE", "ROW");
@@ -1126,6 +1245,7 @@ displayScores(struct scoreTag *score)
         printf("Enter any key to go back... ");
         scanf("%d", &nBack);
     }
+    // if file has no content, this will be displayed
     else
     {
         printf("No scores to display.\n");
@@ -1138,8 +1258,10 @@ displayScores(struct scoreTag *score)
     fclose(fp);
 }
 
-// MENU functions
+// MAIN MENU FUNCTIONS
 
+/* displayMainMenu displays the main menu
+*/
 void
 displayMainMenu()
 {
@@ -1178,11 +1300,11 @@ displayMainMenu()
                 break;
             case 2:
                 // PLAY
-                nIndex = displayPlayGame(index, recordMain, ctrRecord);
+                nIndex = displayPlayGame(index, recordMain, ctrRecord); // return the number of players
                 break;
             case 3:
                 // EXIT
-                nExit = displayExit(nExitChoice); // returns 1 if players wants to terminate the program, returns 2 if otherwise
+                nExit = displayExit(nExitChoice); // return 1 if players wants to terminate the program, return 2 if otherwise
                 if(nExit == 2)
                     nExit = 0;
                 break;
@@ -1198,21 +1320,26 @@ displayMainMenu()
     printf("Program terminated.\n");
 }
 
+/* displayManageData displays the features under manage data
+    @param *main - where the main records are stored
+    @param ctr - the number of records stored in main
+    @return ctr - 0 the number of records stored in main
+    Pre-condition: the admin chose manage data
+*/
 int
 displayManageData(struct recordTag *recordMain, int ctr)
 {
-    char Password[6] = "peter";
-    char Back[5] = "BACK";
-    char Input[6];
     int nStop1 = 0, nStop2 = 0;
     int nContinue = 0;
     int nChoice = 0;
     int nBack = 0;
-    int nAdd = 0; // returns 0 if record is existing, returns 1 if record is added
-    char c;
-    int nDelete = 0; // return 0 if no record was deleted, returns the number of records deleted
+    int nAdd = 0; // return 0 if record is existing, return 1 if record is added
+    int nDelete = 0; // return 0 if no record was deleted, return the number of records deleted
     int nImport = 0; // number of records imported
-
+    char Password[6] = "peter";
+    char Back[5] = "BACK";
+    char Input[6];
+    char c;
     FILE *fpRecord;
 
     fpRecord = fopen("records.txt", "r");
@@ -1222,12 +1349,13 @@ displayManageData(struct recordTag *recordMain, int ctr)
         printf("Enter password: ");
         scanf("%s", Input);
         
+        // if input matches the password, enter this condition 
         if(strcmp(Input, Password) == 0)
         {
             nContinue = 1;
             nStop1 = 1;
         }
-        
+        // if admin enters BACK, it will go back to the main menu
         else if(strcmp(Input, Back) == 0)
             nStop1 = 1;
 
@@ -1266,7 +1394,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
                     printf("----------------------------------------------------\n");
                     printf("ADD A RECORD\n");
                     printf("----------------------------------------------------\n");
-                    nAdd = addRecord(recordMain, ctr); // returns 0 if record is existing, returns 1 if record is added 
+                    nAdd = addRecord(recordMain, ctr); // return 0 if record is existing, return 1 if record is added 
                     if(nAdd != 0 && ctr < 20) // if record is added, it will enter this condition 
                         ctr++;
                     break;
@@ -1276,13 +1404,13 @@ displayManageData(struct recordTag *recordMain, int ctr)
                     break;
                 case 3:
                     // DELETE A RECORD
-                    nDelete = deleteRecord(recordMain, ctr); // returns 0 if no record deleted, returns the number of records deleted
+                    nDelete = deleteRecord(recordMain, ctr); // return 0 if no record deleted, return the number of records deleted
                     if(nDelete != 0) // if record is deleted, it will enter this condition
                         ctr -= nDelete; // the number of records deleted will be subtracted from the total number of records 
                     break;
                 case 4:
                     // IMPORT DATA
-                    nImport = importRecord(recordMain, ctr); // returns the number of records imported
+                    nImport = importRecord(recordMain, ctr); // return the number of records imported
                     ctr += nImport;
                     break;
                 case 5:
@@ -1290,6 +1418,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
                     exportRecord(recordMain, ctr);
                     break;
                 case 6:
+                    // BACK TO MAIN MENU
                     nStop2 = 1;
                     break;
                 default:
@@ -1305,16 +1434,21 @@ displayManageData(struct recordTag *recordMain, int ctr)
     return ctr;
 }
 
+/* displayPlayGame displays the features under play game
+    @param index - the number of players
+    @param *recordMain - where the main records are stored
+    @param ctr - the number of records stored in main
+    @return index - the number of players
+    Pre-condition: the admin chose play game
+*/
 int
 displayPlayGame(int index, struct recordTag *recordMain, int ctr)
 {
+    struct scoreTag score[20]; // up to 20 players
     int nChoice;
     int nExit = 0;
     int nBack;
     int nPlayers;
-
-    struct scoreTag score[20]; // up to 20 players
-
     FILE *fpScore;
 
     fpScore = fopen("score.txt", "a");
@@ -1334,13 +1468,14 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
         printf("----------------------------------------------------\n");
         printf("Enter choice: ");
         scanf("%d", &nChoice);
+        
         switch(nChoice)
         {
             case 1:
                 // PLAY
-                nPlayers = displayPlay(index, score, recordMain, ctr); // returns 1 if new player is added, returns 0 if player is existing 
+                nPlayers = displayPlay(index, score, recordMain, ctr); // return 1 if new player is added, return 0 if player is existing 
                 if(nPlayers == 1)
-                    index++;
+                    index++; // increment if new player is added 
                 break;
             case 2:
                 // VIEW SCORES
@@ -1351,14 +1486,13 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
                 nExit = 1;
                 break;
             default:
-                // input is not in the choices
                 printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back... ");
                 scanf("%d", &nBack);
                 break;
         }
 
-        printScores(score, index);
+        printScores(score, index); // prints the player information on "score.txt"
         
     } while(nExit == 0);
 
@@ -1367,6 +1501,11 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
     return index;
 }
 
+/* displayExit displays the features under play game
+    @param nExitChoice - the number of players
+    @return nExitChoice - 1 to terminate the program and 2 if otherwise
+    Pre-condition: the admin chose exit
+*/
 int
 displayExit(int nExitChoice)
 {
@@ -1391,9 +1530,11 @@ displayExit(int nExitChoice)
         switch(nChoice)
         {
             case 1:
+                // set to 1 to terminate program
                 nExitChoice = 1;
                 break;
             case 2:
+                // otherwise, set to 2 
                 nExitChoice = 2;
                 break;
             default:
@@ -1407,8 +1548,12 @@ displayExit(int nExitChoice)
     return nExitChoice;
 }
 
-// PRINT functions
+// PRINT FUNCTION
 
+/* printScores prints the player name and score in the file "score.txt"
+    @param *score - where the information of the players are stored
+    @param len - the number of players
+*/
 void
 printScores(struct scoreTag *score, int len)
 {
@@ -1423,26 +1568,4 @@ printScores(struct scoreTag *score, int len)
     }
 
     fclose(fpScore);
-}
-
-void
-printRecord(struct recordTag *main, int ctr)
-{
-    FILE *fp;
-
-    fp = fopen("records.txt", "a");
-    for(int i = 0; i < ctr; i++)
-    {
-        fprintf(fp, "%s\n", main[i].topic);
-        fprintf(fp, "%d\n", main[i].num);
-        fprintf(fp, "%s\n", main[i].question);
-        fprintf(fp, "%s\n", main[i].choice1);
-        fprintf(fp, "%s\n", main[i].choice2);
-        fprintf(fp, "%s\n", main[i].choice3);
-        fprintf(fp, "%s\n", main[i].answer);
-        fprintf(fp, "\n");
-    }
-
-    fprintf(fp, "------\n");
-    fclose(fp);
 }
