@@ -10,7 +10,6 @@ not copied in part or whole or otherwise plagiarized the work of other students 
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include <conio.h>
 
 typedef char topic20[21];
 typedef char question150[151];
@@ -18,7 +17,6 @@ typedef char choice30[31];
 typedef char answer30[31];
 typedef char filename30[31];
 typedef char name30[31];
-typedef char password30[31];
 
 struct recordTag
 {
@@ -51,6 +49,7 @@ struct recordEditTag
     choice30 editChoice2;
     choice30 editChoice3;
     answer30 editAnswer;
+
 };
 
 struct recordImportTag
@@ -70,12 +69,9 @@ struct scoreTag
     int playerScore;
 };
 
-/*--------STRING FUNCTIONS--------*/
 void getString(question150);
 void getFileString(FILE*, question150);
-void getPassword(password30);
 
-/*--------DISPLAY FUNCTIONS--------*/
 void displayExistingRecord(struct recordTag);
 void displaySuccessAdded(void);
 void displaySuccessEdited(void);
@@ -84,28 +80,25 @@ void displaySuccessImported(void);
 void displaySuccessExported(void);
 void displayFinalScore(name30, int);
 
-/*--------MANAGE DATA FUNCTIONS--------*/
 int addRecord(struct recordTag*, int);
 void editRecord(struct recordTag*, int);
 int deleteRecord(struct recordTag*, int);
 int importRecord(struct recordTag*, int);
 void exportRecord(struct recordTag*, int);
 
-/*--------PLAY FUNCTIONS--------*/
 int displayPlay(int, struct scoreTag*, struct recordTag*, int);
 int displayTopics(struct recordTag*, int);
 void displayScores(struct scoreTag*);
 
-/*--------MAIN MENU FUNCTIONS--------*/
 void displayMainMenu(void);
 int displayManageData(struct recordTag*, int);
 int displayPlayGame(int, struct recordTag*, int);
 int displayExit(int);
 
-/*--------PRINT FUNCTION--------*/
 void printScores(struct scoreTag*, int);
 
-/*--------MAIN FUNCTION--------*/
+// MAIN FUNCTION
+
 int
 main()
 {
@@ -114,7 +107,8 @@ main()
     return 0;
 }
 
-/*--------STRING FUNCTIONS--------*/
+// STRING FUNCTIONS
+
 /* getString takes string inputs with space characters 
     @param question - where the string input will be stored
 */
@@ -163,41 +157,8 @@ getFileString(FILE *fp, question150 tempQuestion)
     }while (nEnd == 1);
 }
 
-/* getPassword receives string input for password 
-    @param password - where the string input will be stored
-*/
-void
-getPassword(password30 password)
-{
-    int i = 0;
-    char c;
-    
-    do
-    {
-        c = getch();
-        if(c != '\r')
-        {   
-            if(c == '\b') // if user enters backspace, delete character
-            {
-                if(i > 0)
-                {
-                    password[i-1] = '\0';
-                    printf("\b \b");
-                    i = i - 1;
-                }
-            }
-            else
-            {
-                password[i] = c;
-                printf("*"); // display masked character as *
-                i++;
-                password[i] = '\0';
-            }
-        }
-    } while(c != '\r' && i < 30);
-}
+// DISPLAY FUNCTIONS
 
-/*--------DISPLAY FUNCTIONS--------*/
 /* displayExistingRecord displays the existing record 
     @param main - the existing record to be displayed 
     Pre-condition: the question entered already exists 
@@ -295,7 +256,7 @@ displayFinalScore(name30 playerName, int playerScore)
 {
     char cBack;
 
-    system("cls");
+    system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
     printf("----------------------------------------------------\n");
     printf("PLAY GAME\n");
@@ -307,7 +268,8 @@ displayFinalScore(name30 playerName, int playerScore)
     scanf(" %c", &cBack);
 }
 
-/*--------MANAGE DATA FUNCTIONS--------*/
+// MANAGE DATA FUNCTIONS
+
 /* addRecord displays the add feature under manage data
     @param *main - where the added record will be stored
     @param i - the index of the added record
@@ -337,7 +299,7 @@ addRecord(struct recordTag *main, int i)
         // this condition goes through every question stored in the main records to check for a duplicate
         if(strcmp(A.addQuestion, main[j].question) == 0)
         {
-            system("cls");
+            system("clear");
             printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
             printf("----------------------------------------------------\n");
             printf("ADD A RECORD\n");
@@ -380,6 +342,7 @@ addRecord(struct recordTag *main, int i)
     fclose(fp);
     return n;
 }
+
 /* editRecord displays the edit feature under manage data
     @param *main - where the main records are stored
     @param ctr - the number of records stored in the main 
@@ -409,7 +372,7 @@ editRecord(struct recordTag *main, int ctr)
     // this checks if there are no records
     if(strcmp(main[0].topic, "") == 0)
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("EDIT A RECORD\n");
@@ -428,7 +391,7 @@ editRecord(struct recordTag *main, int ctr)
             ctrQuestion = 0;
             nStopQuestion = 0;
 
-            system("cls");
+            system("clear");
             printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
             printf("----------------------------------------------------\n");
             printf("EDIT A RECORD\n");
@@ -477,7 +440,7 @@ editRecord(struct recordTag *main, int ctr)
             {
                 do
                 {
-                    system("cls");
+                    system("clear");
                     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
                     printf("----------------------------------------------------\n");
                     printf("EDIT A RECORD\n");
@@ -533,7 +496,7 @@ editRecord(struct recordTag *main, int ctr)
                 // this do-while loop displays the chosen record
                 do
                 {
-                    system("cls");
+                    system("clear");
                     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
                     printf("----------------------------------------------------\n");
                     printf("EDIT A RECORD\n");
@@ -633,8 +596,10 @@ editRecord(struct recordTag *main, int ctr)
                 strcpy(topics[i], "\0");
 
         } while(nStop == 0);
+    
     }
 }
+
 /* deleteRecord displays the delete feature under manage data
     @param *main - where the main records are stored
     @param ctr - the number of records stored in the main
@@ -661,7 +626,7 @@ deleteRecord(struct recordTag *main, int ctr)
 
     if(strcmp(main[0].topic, "") == 0)
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("DELETE A RECORD\n");
@@ -678,7 +643,7 @@ deleteRecord(struct recordTag *main, int ctr)
             nTopics = 0;
             kLast = 0;
 
-            system("cls");
+            system("clear");
             printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
             printf("----------------------------------------------------\n");
             printf("DELETE A RECORD\n");
@@ -726,7 +691,7 @@ deleteRecord(struct recordTag *main, int ctr)
             {
                 do
                 {
-                    system("cls");
+                    system("clear");
                     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
                     printf("----------------------------------------------------\n");
                     printf("DELETE A RECORD\n");
@@ -782,7 +747,7 @@ deleteRecord(struct recordTag *main, int ctr)
                 // this do-while loop displays the chosen record
                 do
                 {
-                    system("cls");
+                    system("clear");
                     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
                     printf("----------------------------------------------------\n");
                     printf("DELETE A RECORD\n");
@@ -871,7 +836,7 @@ importRecord(struct recordTag *main, int index)
 
     do
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("IMPORT DATA\n");
@@ -963,7 +928,7 @@ exportRecord(struct recordTag *main, int ctr)
     FILE *fp;
     char cBack;
 
-    system("cls");
+    system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
     printf("----------------------------------------------------\n");
     printf("EXPORT DATA\n");
@@ -971,7 +936,7 @@ exportRecord(struct recordTag *main, int ctr)
 
     if(strcmp(main[0].topic, "") == 0)
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("EXPORT DATA\n");
@@ -1005,7 +970,8 @@ exportRecord(struct recordTag *main, int ctr)
     }
 }
 
-/*--------PLAY FUNCTIONS--------*/
+// PLAY FUNCTIONS
+
 /* displayPlay displays the play game feature under play
     @param index - the index after last player stored in score
     @param *score - where the information of the players are stored
@@ -1030,7 +996,7 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
     // this condition checks if there no records 
     if(strcmp(main[0].topic, "") == 0)
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("PLAY GAME\n");
@@ -1043,7 +1009,7 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
     }
     else
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("PLAY GAME\n");
@@ -1054,7 +1020,7 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
         do
         {
             nReturn = 0;
-            system("cls");
+            system("clear");
             printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
             printf("----------------------------------------------------\n");
             printf("PLAY GAME\n");
@@ -1320,7 +1286,7 @@ displayScores(struct scoreTag *score)
     if (ftell(fp) != 0) 
         nContent = 1; // set to 1 if it has content
 
-    system("cls");
+    system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
     printf("----------------------------------------------------\n");
     printf("VIEW SCORE\n");
@@ -1351,7 +1317,8 @@ displayScores(struct scoreTag *score)
     fclose(fp);
 }
 
-/*--------MAIN MENU FUNCTIONS--------*/
+// MAIN MENU FUNCTIONS
+
 /* displayMainMenu displays the main menu
 */
 void
@@ -1372,7 +1339,7 @@ displayMainMenu()
     {
         ctr = ctrRecord;
         index = nIndex;
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("MAIN MENU\n");
@@ -1428,9 +1395,9 @@ displayManageData(struct recordTag *recordMain, int ctr)
     int nAdd = 0; // return 0 if record is existing, return 1 if record is added
     int nDelete = 0; // return 0 if no record was deleted, return the number of records deleted
     int nImport = 0; // number of records imported
-    char passwordAdmin[6] = "peter";
+    char Password[6] = "peter";
     char Back[5] = "BACK";
-    password30 password;
+    char Input[6];
     char c;
     FILE *fpRecord;
 
@@ -1439,16 +1406,16 @@ displayManageData(struct recordTag *recordMain, int ctr)
     do
     {
         printf("Enter password: ");
-        getPassword(password);
+        scanf("%s", Input);
         
         // if input matches the password, enter this condition 
-        if(strcmp(password, passwordAdmin) == 0)
+        if(strcmp(Input, Password) == 0)
         {
             nContinue = 1;
             nStop1 = 1;
         }
         // if admin enters BACK, it will go back to the main menu
-        else if(strcmp(password, Back) == 0)
+        else if(strcmp(Input, Back) == 0)
             nStop1 = 1;
 
         else
@@ -1462,7 +1429,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
     {
         do{
             scanf("%c", &c);
-            system("cls");
+            system("clear");
             printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
             printf("----------------------------------------------------\n");
             printf("MANAGE DATA\n");
@@ -1481,7 +1448,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
             {
                 case 1:
                     // ADD A RECORD
-                    system("cls");
+                    system("clear");
                     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
                     printf("----------------------------------------------------\n");
                     printf("ADD A RECORD\n");
@@ -1549,7 +1516,7 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
     {
         nPlayers = 0;
 
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("PLAY\n");
@@ -1606,7 +1573,7 @@ displayExit(int nExitChoice)
 
     do
     {
-        system("cls");
+        system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("EXIT\n");
@@ -1640,7 +1607,8 @@ displayExit(int nExitChoice)
     return nExitChoice;
 }
 
-/*--------PRINT FUNCTION--------*/
+// PRINT FUNCTION
+
 /* printScores prints the player name and score in the file "score.txt"
     @param *score - where the information of the players are stored
     @param len - the number of players
