@@ -67,7 +67,6 @@ struct scoreTag
 {
     name30 playerName;
     int playerScore;
-    int playerRow;
 };
 
 void getString(question150 question);
@@ -108,7 +107,7 @@ main()
     return 0;
 }
 
-// GETSTRING FUNCTIONS
+// STRING FUNCTIONS
 
 /* getString takes string inputs with space characters 
     @param question - where the string input will be stored
@@ -167,7 +166,7 @@ getFileString(FILE *fp, question150 tempQuestion)
 void
 displayExistingRecord(struct recordTag main)
 {
-    int nBack;
+    char cBack;
 
     printf("TOPIC: %s\n", main.topic);
     printf("QUESTION: %s\n", main.question);
@@ -179,7 +178,7 @@ displayExistingRecord(struct recordTag main)
     printf("----------------------------------------------------\n");
     printf("RECORD ALREADY EXISTS.\n");
     printf("Enter any key to go back...\n");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displaySuccessAdded displays if adding a record was successful
@@ -188,11 +187,11 @@ displayExistingRecord(struct recordTag main)
 void
 displaySuccessAdded()
 {
-    int nBack;
+    char cBack;
     printf("----------------------------------------------------\n");
     printf("SUCCESSFULLY ADDED!\n");
     printf("Press any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displaySuccessEdited displays if edting a record was successful
@@ -201,11 +200,11 @@ displaySuccessAdded()
 void
 displaySuccessEdited()
 {
-    int nBack;
+    char cBack;
 
     printf("\nSUCCESSFULLY CHANGED!\n");
     printf("Press any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displaySuccessDeleted displays if deleted a record was successful
@@ -214,11 +213,11 @@ displaySuccessEdited()
 void
 displaySuccessDeleted()
 {
-    int nBack;
+    char cBack;
 
     printf("\nSUCCESSFULLY DELETED!\n");
     printf("Press any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displaySuccessImported displays if importing data from a file was successful
@@ -227,11 +226,11 @@ displaySuccessDeleted()
 void
 displaySuccessImported()
 {
-    int nBack;
+    char cBack;
 
     printf("\nSUCCESSFULLY IMPORTED!\n");
     printf("Press any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displaySuccessExported displays if exporting data to a file was successful
@@ -240,11 +239,11 @@ displaySuccessImported()
 void
 displaySuccessExported()
 {
-    int nBack;
+    char cBack;
 
     printf("\nSUCCESSFULLY EXPORTED!\n");
     printf("Press any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 /* displayFinalScore displays the final accumulated score of the player
@@ -255,7 +254,7 @@ displaySuccessExported()
 void
 displayFinalScore(name30 playerName, int playerScore)
 {
-    int nBack;
+    char cBack;
 
     system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
@@ -266,7 +265,7 @@ displayFinalScore(name30 playerName, int playerScore)
     printf("Your final accumulated score is %d.\n", playerScore);
     printf("----------------------------------------------------\n");
     printf("Enter any key to go back... ");
-    scanf("%d", &nBack);
+    scanf(" %c", &cBack);
 }
 
 // MANAGE DATA FUNCTIONS
@@ -366,222 +365,239 @@ editRecord(struct recordTag *main, int ctr)
     int ctrQuestion; // this counts how many questions there are under a topic
     int nStopQuestion; // this stops the do-while loop if the question has no duplicate
     int nQuestionNum; // this resets the question number per topic
-    int nBack; 
+    char cBack; 
     char topics[20][21]; // maximum 20 topics with 20 letters
     char ch;
 
-    do
+    // this checks if there are no records
+    if(strcmp(main[0].topic, "") == 0)
     {
-        nTopics = 0;
-        kLast = 0;
-        ctrQuestion = 0;
-        nStopQuestion = 0;
-
         system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("EDIT A RECORD\n");
         printf("----------------------------------------------------\n");
-
-        // this for loop searches for the unique topics
-        for (int i = 0; i < ctr; i++) 
+        printf("\nThere are no existing records to be edited.\n\n");
+        printf("----------------------------------------------------\n");  
+        printf("Enter any key to go back... ");
+        scanf(" %c", &cBack);
+    }
+    else
+    {
+        do
         {
-            nFound = 0;
-            j = 0;
-            while(!nFound && j < nTopics)
+            nTopics = 0;
+            kLast = 0;
+            ctrQuestion = 0;
+            nStopQuestion = 0;
+
+            system("clear");
+            printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+            printf("----------------------------------------------------\n");
+            printf("EDIT A RECORD\n");
+            printf("----------------------------------------------------\n");
+
+            // this for loop searches for the unique topics
+            for (int i = 0; i < ctr; i++) 
             {
-                if(strcmp(main[i].topic, topics[j]) == 0)
-                    nFound = 1; // if there is a duplicate, it will no longer be stored in the array topics
-                j++;
+                nFound = 0;
+                j = 0;
+                while(!nFound && j < nTopics)
+                {
+                    if(strcmp(main[i].topic, topics[j]) == 0)
+                        nFound = 1; // if there is a duplicate, it will no longer be stored in the array topics
+                    j++;
+                }
+                if(!nFound)
+                {
+                    strcpy(topics[nTopics], main[i].topic);
+                    nTopics++; // this counts the number of unique topics
+                }
             }
-            if(!nFound)
+
+            printf("TOPICS: \n");
+            // this for loop displays the unique topics
+            for(int k = 0; k < nTopics; k++)
             {
-                strcpy(topics[nTopics], main[i].topic);
-                nTopics++; // this counts the number of unique topics
+                if(strcmp(topics[k], "\0") != 0)
+                    printf("[%d] %s\n", k+1, topics[k]);
+                kLast = k + 2; // this gets the choice number for back to manage data
             }
-        }
+            printf("[%d] Back to MANAGE DATA\n", kLast);
 
-        printf("TOPICS: \n");
-        // this for loop displays the unique topics
-        for(int k = 0; k < nTopics; k++)
-        {
-            if(strcmp(topics[k], "\0") != 0)
-                printf("[%d] %s\n", k+1, topics[k]);
-            kLast = k + 2; // this gets the choice number for back to manage data
-        }
-        printf("[%d] Back to MANAGE DATA\n", kLast);
+            printf("----------------------------------------------------\n");
+            printf("Enter topic: ");
+            scanf("%d", &nTopicChoice);
 
-        printf("----------------------------------------------------\n");
-        printf("Enter topic: ");
-        scanf("%d", &nTopicChoice);
-
-        // if the admin chooses back to manage data, it will go under this condition, which will terminate the do-while
-        if(nTopicChoice == kLast)
-        {
-            nStop = 1;
-        }
-        
-        // if the admin enters a valid choice, it will enter this condition
-        else if(nTopicChoice > 0 && nTopicChoice < kLast)
-        {
-            do
+            // if the admin chooses back to manage data, it will go under this condition, which will terminate the do-while
+            if(nTopicChoice == kLast)
             {
-                system("clear");
-                printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
-                printf("----------------------------------------------------\n");
-                printf("EDIT A RECORD\n");
-                printf("----------------------------------------------------\n");
-                printf("QUESTIONS: \n");
-                    
-                // bubble sort to arrange question number in ascending 
-                for(int i = 0; i < ctr-1; i++) 
-                {
-                    for(int j = 0; j < ctr-i-1; j++) 
-                    {
-                        if(main[j].num > main[j+1].num) 
-                        {
-                            // swap main[j] and main[j+1]
-                            temp = main[j];
-                            main[j] = main[j+1];
-                            main[j+1] = temp;
-                        }
-                    }
-                }
-
-                nQuestionNum = 1;
-                // this for loop prints the questions under the chosen topic
-                for(int k = 0; k < ctr; k++)
-                {
-                    if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
-                    {
-                        printf("[%d] ", nQuestionNum);
-                        printf("%s\n", main[k].question);
-                        main[k].num = nQuestionNum;
-                        nQuestionNum++;
-                    }
-                }
-
-                printf("----------------------------------------------------\n");
-                printf("Enter number to edit: ");
-                scanf("%d", &nChoice);
-                if(nChoice >= nQuestionNum || nChoice <= 0)
-                {
-                    printf("\nINVALID INPUT!\n");
-                    printf("Enter any key to go back...\n");
-                    scanf("%d", &nBack);
-                }
-            } while(nChoice >= nQuestionNum || nChoice <= 0);
-
-            // this for loop gets the index of the chosen question
-            for(int z = 0; z < ctr; z++)
-            {
-                if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
-                    index = z;
+                nStop = 1;
             }
             
-            // this do-while loop displays the chosen record
-            do
+            // if the admin enters a valid choice, it will enter this condition
+            else if(nTopicChoice > 0 && nTopicChoice < kLast)
             {
-                system("clear");
-                printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
-                printf("----------------------------------------------------\n");
-                printf("EDIT A RECORD\n");
-                printf("----------------------------------------------------\n");
-                printf("CHOSEN RECORD: \n");
-                printf("[1] TOPIC: %s\n", main[index].topic);
-                printf("[2] QUESTION: %s\n", main[index].question);
-                printf("[3] CHOICE 1: %s\n", main[index].choice1);
-                printf("[4] CHOICE 2: %s\n", main[index].choice2);
-                printf("[5] CHOICE 3: %s\n", main[index].choice3);
-                printf("[6] ANSWER: %s\n", main[index].answer);
-
-                printf("----------------------------------------------------\n");
-            
-                printf("Enter field to be edited: ");
-                scanf("%d", &nEditChoice);
-                if(nEditChoice >= 7 || nEditChoice <= 0)
+                do
                 {
-                    printf("\nINVALID INPUT!\n");
-                    printf("Enter any key to go back...\n");
-                    scanf("%d", &nBack);
-                }
-            } while(nEditChoice >= 7 || nEditChoice <= 0);
-
-            switch(nEditChoice)
-            {
-                case 1:
-                    printf("Enter NEW TOPIC: ");
-                    scanf("%s", edit.editTopic);
-                    strcpy(main[index].topic, edit.editTopic);
-                    for(int r = 0; r < ctr; r++)
+                    system("clear");
+                    printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+                    printf("----------------------------------------------------\n");
+                    printf("EDIT A RECORD\n");
+                    printf("----------------------------------------------------\n");
+                    printf("QUESTIONS: \n");
+                        
+                    // bubble sort to arrange question number in ascending 
+                    for(int i = 0; i < ctr-1; i++) 
                     {
-                        // this condition checks if the new topic is existing
-                        if(strcmp(main[index].topic, main[r].topic) == 0)
-                            ctrQuestion++; // if existing, increment question number
-                        main[index].num = ctrQuestion;
-                    }
-                    displaySuccessEdited();
-                    break;
-                case 2:
-                    do
-                    {
-                        nStopQuestion = 0;
-                        printf("Enter NEW QUESTION: ");
-                        scanf("%c", &ch);
-                        getString(edit.editQuestion);
-                        for(int x = 0; x < ctr; x++)
+                        for(int j = 0; j < ctr-i-1; j++) 
                         {
-                            // this condition checks if the new question is existing
-                            if(strcmp(edit.editQuestion, main[x].question) == 0)
+                            if(main[j].num > main[j+1].num) 
                             {
-                                printf("RECORD ALREADY EXISTS.\n");
-                                nStopQuestion = 1;
+                                // swap main[j] and main[j+1]
+                                temp = main[j];
+                                main[j] = main[j+1];
+                                main[j+1] = temp;
                             }
                         }
-                    } while(nStopQuestion == 1);
-                    strcpy(main[index].question, edit.editQuestion);
-                    displaySuccessEdited();
-                    break;
-                case 3:
-                    printf("Enter NEW CHOICE 1: ");
-                    scanf("%s", edit.editChoice1);
-                    strcpy(main[index].choice1, edit.editChoice1);
-                    displaySuccessEdited();
-                    break;
-                case 4:
-                    printf("Enter NEW CHOICE 2: ");
-                    scanf("%s", edit.editChoice2);
-                    strcpy(main[index].choice2, edit.editChoice2);
-                    displaySuccessEdited();
-                    break;
-                case 5:
-                    printf("Enter NEW CHOICE 3: ");
-                    scanf("%s", edit.editChoice3);
-                    strcpy(main[index].choice3, edit.editChoice3);
-                    displaySuccessEdited();
-                    break;
-                case 6:
-                    printf("Enter NEW ANSWER: ");
-                    scanf("%s", edit.editAnswer);
-                    strcpy(main[index].answer, edit.editAnswer);
-                    displaySuccessEdited();
-                    break;
-            }
-        }
-       
-        // if the admin enters an invalid choice, it will enter this condition
-        else
-        {
-            printf("\nINVALID INPUT!\n");
-            printf("Enter any key to go back...\n");
-            scanf("%d", &nBack);
-        }
-        
-        // this nested for loop makes the array topics empty
-        for (int i = 0; i < 20; i++) 
-            strcpy(topics[i], "\0");
+                    }
 
-    } while(nStop == 0);
+                    nQuestionNum = 1;
+                    // this for loop prints the questions under the chosen topic
+                    for(int k = 0; k < ctr; k++)
+                    {
+                        if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                        {
+                            printf("[%d] ", nQuestionNum);
+                            printf("%s\n", main[k].question);
+                            main[k].num = nQuestionNum;
+                            nQuestionNum++;
+                        }
+                    }
+
+                    printf("----------------------------------------------------\n");
+                    printf("Enter number to edit: ");
+                    scanf("%d", &nChoice);
+                    if(nChoice >= nQuestionNum || nChoice <= 0)
+                    {
+                        printf("\nINVALID INPUT!\n");
+                        printf("Enter any key to go back...\n");
+                        scanf(" %c", &cBack);
+                    }
+                } while(nChoice >= nQuestionNum || nChoice <= 0);
+
+                // this for loop gets the index of the chosen question
+                for(int z = 0; z < ctr; z++)
+                {
+                    if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
+                        index = z;
+                }
+                
+                // this do-while loop displays the chosen record
+                do
+                {
+                    system("clear");
+                    printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+                    printf("----------------------------------------------------\n");
+                    printf("EDIT A RECORD\n");
+                    printf("----------------------------------------------------\n");
+                    printf("CHOSEN RECORD: \n");
+                    printf("[1] TOPIC: %s\n", main[index].topic);
+                    printf("[2] QUESTION: %s\n", main[index].question);
+                    printf("[3] CHOICE 1: %s\n", main[index].choice1);
+                    printf("[4] CHOICE 2: %s\n", main[index].choice2);
+                    printf("[5] CHOICE 3: %s\n", main[index].choice3);
+                    printf("[6] ANSWER: %s\n", main[index].answer);
+
+                    printf("----------------------------------------------------\n");
+                
+                    printf("Enter field to be edited: ");
+                    scanf("%d", &nEditChoice);
+                    if(nEditChoice >= 7 || nEditChoice <= 0)
+                    {
+                        printf("\nINVALID INPUT!\n");
+                        printf("Enter any key to go back...\n");
+                        scanf(" %c", &cBack);
+                    }
+                } while(nEditChoice >= 7 || nEditChoice <= 0);
+
+                switch(nEditChoice)
+                {
+                    case 1:
+                        printf("Enter NEW TOPIC: ");
+                        scanf("%s", edit.editTopic);
+                        strcpy(main[index].topic, edit.editTopic);
+                        for(int r = 0; r < ctr; r++)
+                        {
+                            // this condition checks if the new topic is existing
+                            if(strcmp(main[index].topic, main[r].topic) == 0)
+                                ctrQuestion++; // if existing, increment question number
+                            main[index].num = ctrQuestion;
+                        }
+                        displaySuccessEdited();
+                        break;
+                    case 2:
+                        do
+                        {
+                            nStopQuestion = 0;
+                            printf("Enter NEW QUESTION: ");
+                            scanf("%c", &ch);
+                            getString(edit.editQuestion);
+                            for(int x = 0; x < ctr; x++)
+                            {
+                                // this condition checks if the new question is existing
+                                if(strcmp(edit.editQuestion, main[x].question) == 0)
+                                {
+                                    printf("RECORD ALREADY EXISTS.\n");
+                                    nStopQuestion = 1;
+                                }
+                            }
+                        } while(nStopQuestion == 1);
+                        strcpy(main[index].question, edit.editQuestion);
+                        displaySuccessEdited();
+                        break;
+                    case 3:
+                        printf("Enter NEW CHOICE 1: ");
+                        scanf("%s", edit.editChoice1);
+                        strcpy(main[index].choice1, edit.editChoice1);
+                        displaySuccessEdited();
+                        break;
+                    case 4:
+                        printf("Enter NEW CHOICE 2: ");
+                        scanf("%s", edit.editChoice2);
+                        strcpy(main[index].choice2, edit.editChoice2);
+                        displaySuccessEdited();
+                        break;
+                    case 5:
+                        printf("Enter NEW CHOICE 3: ");
+                        scanf("%s", edit.editChoice3);
+                        strcpy(main[index].choice3, edit.editChoice3);
+                        displaySuccessEdited();
+                        break;
+                    case 6:
+                        printf("Enter NEW ANSWER: ");
+                        scanf("%s", edit.editAnswer);
+                        strcpy(main[index].answer, edit.editAnswer);
+                        displaySuccessEdited();
+                        break;
+                }
+            }
+        
+            // if the admin enters an invalid choice, it will enter this condition
+            else
+            {
+                printf("\nINVALID INPUT!\n");
+                printf("Enter any key to go back...\n");
+                scanf(" %c", &cBack);
+            }
+            
+            // this nested for loop makes the array topics empty
+            for (int i = 0; i < 20; i++) 
+                strcpy(topics[i], "\0");
+
+        } while(nStop == 0);
+    
+    }
 }
 
 /* deleteRecord displays the delete feature under manage data
@@ -605,182 +621,197 @@ deleteRecord(struct recordTag *main, int ctr)
     int nStop = 0; // this stops the do-while loop and returns back to MANAGE DATA 
     int nQuestionNum; // this resets the question number per topic 
     int nDelete = 0; // this counts how many records were deleted
-    int nBack;
+    char cBack;
     char topics[20][21]; // maximum 20 topics with 20 letters
 
-    do
+    if(strcmp(main[0].topic, "") == 0)
     {
-        nTopics = 0;
-        kLast = 0;
-
         system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("DELETE A RECORD\n");
         printf("----------------------------------------------------\n");
-        
-        // this for loop searches for the unique topics
-        for (int i = 0; i < ctr; i++) 
+        printf("\nThere are no existing records to be deleted.\n\n");
+        printf("----------------------------------------------------\n");  
+        printf("Enter any key to go back... ");
+        scanf(" %c", &cBack);
+    }
+    else
+    {
+        do
         {
-            nFound = 0;
-            j = 0;
-            while(!nFound && j < nTopics)
+            nTopics = 0;
+            kLast = 0;
+
+            system("clear");
+            printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+            printf("----------------------------------------------------\n");
+            printf("DELETE A RECORD\n");
+            printf("----------------------------------------------------\n");
+            
+            // this for loop searches for the unique topics
+            for (int i = 0; i < ctr; i++) 
             {
-                if(strcmp(main[i].topic, topics[j]) == 0)
-                    nFound = 1;
-                j++;
-            }
-            if(!nFound)
-            {
-                strcpy(topics[nTopics], main[i].topic);
-                nTopics++;
-            }
-        }
-
-        printf("TOPICS: \n");
-         // this for loop displays the unique topics
-        for(int k = 0; k < nTopics; k++)
-        {
-            printf("[%d] %s\n", k+1, topics[k]);
-            kLast = k + 2;
-        }
-        printf("[%d] Back to MANAGE DATA\n", kLast);
-
-        printf("----------------------------------------------------\n");
-        printf("Enter topic: ");
-        scanf("%d", &nTopicChoice);
-
-        // if user chooses back to manage data, it will go under this condition, which will terminate the do-while
-        if(nTopicChoice == kLast)
-        {
-            nStop = 1;
-        }
-
-        // if the admin enters a valid choice, it will enter this condition
-        else if(nTopicChoice > 0 && nTopicChoice < kLast)
-        {
-            do
-            {
-                system("clear");
-                printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
-                printf("----------------------------------------------------\n");
-                printf("DELETE A RECORD\n");
-                printf("----------------------------------------------------\n");
-                printf("QUESTIONS: \n");
-                
-                // bubble sort to arrange question number in ascending 
-                for(int i = 0; i < ctr-1; i++) 
+                nFound = 0;
+                j = 0;
+                while(!nFound && j < nTopics)
                 {
-                    for(int j = 0; j < ctr-i-1; j++) 
+                    if(strcmp(main[i].topic, topics[j]) == 0)
+                        nFound = 1;
+                    j++;
+                }
+                if(!nFound)
+                {
+                    strcpy(topics[nTopics], main[i].topic);
+                    nTopics++;
+                }
+            }
+
+            printf("TOPICS: \n");
+            // this for loop displays the unique topics
+            for(int k = 0; k < nTopics; k++)
+            {
+                printf("[%d] %s\n", k+1, topics[k]);
+                kLast = k + 2;
+            }
+            printf("[%d] Back to MANAGE DATA\n", kLast);
+
+            printf("----------------------------------------------------\n");
+            printf("Enter topic: ");
+            scanf("%d", &nTopicChoice);
+
+            // if user chooses back to manage data, it will go under this condition, which will terminate the do-while
+            if(nTopicChoice == kLast)
+            {
+                nStop = 1;
+            }
+
+            // if the admin enters a valid choice, it will enter this condition
+            else if(nTopicChoice > 0 && nTopicChoice < kLast)
+            {
+                do
+                {
+                    system("clear");
+                    printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+                    printf("----------------------------------------------------\n");
+                    printf("DELETE A RECORD\n");
+                    printf("----------------------------------------------------\n");
+                    printf("QUESTIONS: \n");
+                    
+                    // bubble sort to arrange question number in ascending 
+                    for(int i = 0; i < ctr-1; i++) 
                     {
-                        if(main[j].num > main[j+1].num) 
+                        for(int j = 0; j < ctr-i-1; j++) 
                         {
-                            // swap main[j] and main[j+1]
-                            temp = main[j];
-                            main[j] = main[j+1];
-                            main[j+1] = temp;
+                            if(main[j].num > main[j+1].num) 
+                            {
+                                // swap main[j] and main[j+1]
+                                temp = main[j];
+                                main[j] = main[j+1];
+                                main[j+1] = temp;
+                            }
                         }
                     }
-                }
 
-                nQuestionNum = 1;
-                // this for loop prints the questions under the chosen topic
-                for(int k = 0; k < ctr; k++)
-                {
-                    if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                    nQuestionNum = 1;
+                    // this for loop prints the questions under the chosen topic
+                    for(int k = 0; k < ctr; k++)
                     {
-                        printf("[%d] ", nQuestionNum);
-                        printf("%s\n", main[k].question);
-                        main[k].num = nQuestionNum;
-                        nQuestionNum++;
+                        if(strcmp(topics[nTopicChoice-1], main[k].topic) == 0)
+                        {
+                            printf("[%d] ", nQuestionNum);
+                            printf("%s\n", main[k].question);
+                            main[k].num = nQuestionNum;
+                            nQuestionNum++;
+                        }
                     }
-                }
 
-                printf("----------------------------------------------------\n");
-                printf("Enter number to delete: ");
-                scanf("%d", &nChoice);
-                if(nChoice >= nQuestionNum || nChoice <= 0)
+                    printf("----------------------------------------------------\n");
+                    printf("Enter number to delete: ");
+                    scanf("%d", &nChoice);
+                    if(nChoice >= nQuestionNum || nChoice <= 0)
+                    {
+                        printf("\nINVALID INPUT!\n");
+                        printf("Enter any key to go back...\n");
+                        scanf(" %c", &cBack);
+                    }
+                } while(nChoice >= nQuestionNum || nChoice <= 0);
+
+                // this for loop gets the index of the chosen record
+                for(int z = 0; z < ctr; z++)
                 {
-                    printf("\nINVALID INPUT!\n");
-                    printf("Enter any key to go back...\n");
-                    scanf("%d", &nBack);
+                    if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
+                        index = z;
                 }
-            } while(nChoice >= nQuestionNum || nChoice <= 0);
+                
+                // this do-while loop displays the chosen record
+                do
+                {
+                    system("clear");
+                    printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+                    printf("----------------------------------------------------\n");
+                    printf("DELETE A RECORD\n");
+                    printf("----------------------------------------------------\n");
+                    printf("CHOSEN RECORD: \n");
+                    printf("[1] TOPIC: %s\n", main[index].topic);
+                    printf("[2] QUESTION: %s\n", main[index].question);
+                    printf("[3] CHOICE 1: %s\n", main[index].choice1);
+                    printf("[4] CHOICE 2: %s\n", main[index].choice2);
+                    printf("[5] CHOICE 3: %s\n", main[index].choice3);
+                    printf("[6] ANSWER: %s\n", main[index].answer);
 
-            // this for loop gets the index of the chosen record
-            for(int z = 0; z < ctr; z++)
+                    printf("----------------------------------------------------\n");
+                    printf("Delete this record?: \n");
+                    printf("[1] YES\n");
+                    printf("[2] NO\n");
+                    printf("----------------------------------------------------\n");
+                    printf("Enter choice: ");
+                    scanf("%d", &nDeleteChoice);
+                    if(nDeleteChoice != 1 && nDeleteChoice != 2)
+                    {
+                        printf("\nINVALID INPUT!\n");
+                        printf("Enter any key to go back...\n");
+                        scanf(" %c", &cBack);
+                    }
+                } while(nDeleteChoice != 1 && nDeleteChoice != 2);
+
+                switch(nDeleteChoice)
+                {
+                    case 1:
+                        for(int i = index; i < ctr-1; i++)
+                        {
+                            // the subsequent records will be shifted and stored in the space previously occupied by the deleted record
+                            strcpy(main[i].topic, main[i+1].topic);
+                            main[i].num = main[i+1].num;
+                            strcpy(main[i].question, main[i+1].question);
+                            strcpy(main[i].choice1, main[i+1].choice1);
+                            strcpy(main[i].choice2, main[i+1].choice2);
+                            strcpy(main[i].choice3, main[i+1].choice3);
+                            strcpy(main[i].answer, main[i+1].answer);
+                        }
+                        nDelete++; // this increments each time a record is deleted
+                        displaySuccessDeleted();
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+
+            // if the admin enters an invalid choice, it will enter this condition
+            else
             {
-                if(nChoice == main[z].num && strcmp(topics[nTopicChoice-1], main[z].topic) == 0)
-                    index = z;
+                printf("\nINVALID INPUT!\n");
+                printf("Enter any key to go back...\n");
+                scanf(" %c", &cBack);
             }
             
-            // this do-while loop displays the chosen record
-            do
-            {
-                system("clear");
-                printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
-                printf("----------------------------------------------------\n");
-                printf("DELETE A RECORD\n");
-                printf("----------------------------------------------------\n");
-                printf("CHOSEN RECORD: \n");
-                printf("[1] TOPIC: %s\n", main[index].topic);
-                printf("[2] QUESTION: %s\n", main[index].question);
-                printf("[3] CHOICE 1: %s\n", main[index].choice1);
-                printf("[4] CHOICE 2: %s\n", main[index].choice2);
-                printf("[5] CHOICE 3: %s\n", main[index].choice3);
-                printf("[6] ANSWER: %s\n", main[index].answer);
+            // this nested for loop makes the array topics empty
+            for (int i = 0; i < 20; i++) 
+                strcpy(topics[i], "\0");
 
-                printf("----------------------------------------------------\n");
-                printf("Delete this record?: \n");
-                printf("[1] YES\n");
-                printf("[2] NO\n");
-                printf("----------------------------------------------------\n");
-                printf("Enter choice: ");
-                scanf("%d", &nDeleteChoice);
-                if(nDeleteChoice != 1 && nDeleteChoice != 2)
-                {
-                    printf("\nINVALID INPUT!\n");
-                    printf("Enter any key to go back...\n");
-                    scanf("%d", &nBack);
-                }
-            } while(nDeleteChoice != 1 && nDeleteChoice != 2);
-
-            switch(nDeleteChoice)
-            {
-                case 1:
-                    for(int i = index; i < ctr-1; i++)
-                    {
-                        // the subsequent records will be shifted and stored in the space previously occupied by the deleted record
-                        strcpy(main[i].topic, main[i+1].topic);
-                        main[i].num = main[i+1].num;
-                        strcpy(main[i].question, main[i+1].question);
-                        strcpy(main[i].choice1, main[i+1].choice1);
-                        strcpy(main[i].choice2, main[i+1].choice2);
-                        strcpy(main[i].choice3, main[i+1].choice3);
-                        strcpy(main[i].answer, main[i+1].answer);
-                    }
-                    nDelete++; // this increments each time a record is deleted
-                    displaySuccessDeleted();
-                    break;
-                case 2:
-                    break;
-            }
-        }
-
-        // if the admin enters an invalid choice, it will enter this condition
-        else
-        {
-            printf("\nINVALID INPUT!\n");
-            printf("Enter any key to go back...\n");
-            scanf("%d", &nBack);
-        }
-        
-        // this nested for loop makes the array topics empty
-        for (int i = 0; i < 20; i++) 
-            strcpy(topics[i], "\0");
-
-    } while(nStop == 0);
+        } while(nStop == 0);
     
+    }
     return nDelete;
 }
 
@@ -800,7 +831,7 @@ importRecord(struct recordTag *main, int index)
     int nStop = 1;
     int nChoice;
     int nGetInput = 0;
-    int nBack;
+    char cBack;
     FILE *fp;
 
     do
@@ -838,7 +869,7 @@ importRecord(struct recordTag *main, int index)
                     nStop = 1;
                     printf("\nINVALID INPUT!\n");
                     printf("Enter any key to go back...\n");
-                    scanf("%d", &nBack);
+                    scanf(" %c", &cBack);
                     break;
             }
         }
@@ -895,6 +926,7 @@ exportRecord(struct recordTag *main, int ctr)
 {
     filename30 filename;
     FILE *fp;
+    char cBack;
 
     system("clear");
     printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
@@ -902,27 +934,40 @@ exportRecord(struct recordTag *main, int ctr)
     printf("EXPORT DATA\n");
     printf("----------------------------------------------------\n");
 
-    printf("Please enter file name: ");
-    scanf("%s", filename);
-
-    fp = fopen(filename, "w");
-
-    // this for loop prints the records into the file
-    for(int i = 0; i < ctr; i++)
+    if(strcmp(main[0].topic, "") == 0)
     {
-        fprintf(fp, "%s\n", main[i].topic);
-        fprintf(fp, "%d\n", main[i].num);
-        fprintf(fp, "%s\n", main[i].question);
-        fprintf(fp, "%s\n", main[i].choice1);
-        fprintf(fp, "%s\n", main[i].choice2);
-        fprintf(fp, "%s\n", main[i].choice3);
-        fprintf(fp, "%s\n", main[i].answer);
-        fprintf(fp, "\n");
+        system("clear");
+        printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+        printf("----------------------------------------------------\n");
+        printf("EXPORT DATA\n");
+        printf("----------------------------------------------------\n");
+        printf("\nThere are no existing records to be exported.\n\n");
+        printf("----------------------------------------------------\n");  
+        printf("Enter any key to go back... ");
+        scanf(" %c", &cBack);
     }
+    else 
+    {
+        printf("Please enter file name: ");
+        scanf("%s", filename);
 
-    fclose(fp);
+        fp = fopen(filename, "w");
 
-    displaySuccessExported();
+        // this for loop prints the records into the file
+        for(int i = 0; i < ctr; i++)
+        {
+            fprintf(fp, "%s\n", main[i].topic);
+            fprintf(fp, "%d\n", main[i].num);
+            fprintf(fp, "%s\n", main[i].question);
+            fprintf(fp, "%s\n", main[i].choice1);
+            fprintf(fp, "%s\n", main[i].choice2);
+            fprintf(fp, "%s\n", main[i].choice3);
+            fprintf(fp, "%s\n", main[i].answer);
+            fprintf(fp, "\n");
+        }
+        fclose(fp);
+        displaySuccessExported();
+    }
 }
 
 // PLAY FUNCTIONS
@@ -945,71 +990,86 @@ displayPlay(int index, struct scoreTag *score, struct recordTag *main, int ctr)
     int nPlayer = 1;
     int nFound = 0; // this will change into 1 if a player is already existing in the records 
     int nPlayerIndex = 0; // index of the existing player
+    char cBack;
     temp.playerScore = 0;
-    temp.playerRow = index + 1;
 
-    system("clear");
-    printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
-    printf("----------------------------------------------------\n");
-    printf("PLAY GAME\n");
-    printf("----------------------------------------------------\n");
-    printf("Enter player's name: ");
-    scanf("%s", temp.playerName);
-
-    do
+    // this condition checks if there no records 
+    if(strcmp(main[0].topic, "") == 0)
     {
-        nReturn = 0;
         system("clear");
         printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
         printf("PLAY GAME\n");
         printf("----------------------------------------------------\n");
-        printf("[PLAYER] %s's Score: %d\n", temp.playerName, temp.playerScore);
+        printf("\nThe game cannot be played if there is no record.\n\n");
+        printf("----------------------------------------------------\n");  
+        printf("Enter any key to go back... ");
+        scanf(" %c", &cBack);
+        nPlayer = 0; 
+    }
+    else
+    {
+        system("clear");
+        printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
         printf("----------------------------------------------------\n");
-        printf("Enter [0] to END GAME\n");
+        printf("PLAY GAME\n");
         printf("----------------------------------------------------\n");
+        printf("Enter player's name: ");
+        scanf("%s", temp.playerName);
 
-        printf("TOPICS:\n");
-        nReturn = displayTopics(main, ctr); // set to 0 if incorrect answer, set to 1 if correct answer, set to 2 if end game
-        
-        // if correct answer, enter this condition
-        if(nReturn == 1)
-            temp.playerScore++; // increment player score
-        
-        // if player ends game, enter this condition
-        else if(nReturn == 2)
+        do
         {
-            // this for loop checks if player already exists
-            for(int i = 0; i < 20; i++)
+            nReturn = 0;
+            system("clear");
+            printf("\n\n%40s\n\n","GENERAL KNOWLEDGE QUIZ GAME");
+            printf("----------------------------------------------------\n");
+            printf("PLAY GAME\n");
+            printf("----------------------------------------------------\n");
+            printf("[PLAYER] %s's Score: %d\n", temp.playerName, temp.playerScore);
+            printf("----------------------------------------------------\n");
+            printf("Enter [0] to END GAME\n");
+            printf("----------------------------------------------------\n");
+
+            printf("TOPICS:\n");
+            nReturn = displayTopics(main, ctr); // set to 0 if incorrect answer, set to 1 if correct answer, set to 2 if end game
+            
+            // if correct answer, enter this condition
+            if(nReturn == 1)
+                temp.playerScore++; // increment player score
+            
+            // if player ends game, enter this condition
+            else if(nReturn == 2)
             {
-                if(strcmp(temp.playerName, score[i].playerName) == 0)
+                // this for loop checks if player already exists
+                for(int i = 0; i < 20; i++)
                 {
-                    nFound = 1;
-                    nPlayerIndex = i;
+                    if(strcmp(temp.playerName, score[i].playerName) == 0)
+                    {
+                        nFound = 1;
+                        nPlayerIndex = i;
+                    }
                 }
-            }
 
-            // if player exists, enter this condition get accumulated score
-            if(nFound == 1)
-            {
-                score[nPlayerIndex].playerScore += temp.playerScore;
-                displayFinalScore(temp.playerName, score[nPlayerIndex].playerScore);
-                nPlayer = 0; // set to 0 since player exists
-            }
+                // if player exists, enter this condition get accumulated score
+                if(nFound == 1)
+                {
+                    score[nPlayerIndex].playerScore += temp.playerScore;
+                    displayFinalScore(temp.playerName, score[nPlayerIndex].playerScore);
+                    nPlayer = 0; // set to 0 since player exists
+                }
 
-            // if player is new, enter this condition
-            else
-            {
-                strcpy(score[index].playerName, temp.playerName);
-                score[index].playerScore = temp.playerScore;
-                score[index].playerRow = temp.playerRow;
-                displayFinalScore(score[index].playerName, score[index].playerScore);
-                nPlayer = 1; // set to 1 since new player
+                // if player is new, enter this condition
+                else
+                {
+                    strcpy(score[index].playerName, temp.playerName);
+                    score[index].playerScore = temp.playerScore;
+                    displayFinalScore(score[index].playerName, score[index].playerScore);
+                    nPlayer = 1; // set to 1 since new player
+                }
+                nStop = 1;
             }
-            nStop = 1;
-        }
-    } while (nStop == 0);
-
+        } while (nStop == 0);
+    }
     return nPlayer;
 }
 
@@ -1031,10 +1091,10 @@ displayTopics(struct recordTag *main, int ctr)
     int nQuestion;
     int nReturn = 0;
     int index = 0; // this gets the index of the random question 
-    int nContinue;
     int nStop = 0;
     char topics[20][21]; // maximum 20 topics with 20 letters
     char cAnswer;
+    char cContinue;
     srand(time(NULL)); // this generates a random number
 
     // this for-loop gets all the unique topics and stores them to the array topics
@@ -1125,14 +1185,14 @@ displayTopics(struct recordTag *main, int ctr)
                     {
                         printf("\nNice, your answer is CORRECT!\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                         nReturn = 1;
                     }
                     else
                     {
                         printf("\nSorry, your answer is INCORRECT.\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                     }
                     break;
                 case 'B':
@@ -1140,14 +1200,14 @@ displayTopics(struct recordTag *main, int ctr)
                     {
                         printf("\nNice, your answer is CORRECT!\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                         nReturn = 1;
                     }
                     else
                     {
                         printf("\nSorry, your answer is INCORRECT.\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                     }
                     break;
                 case 'C':
@@ -1155,14 +1215,14 @@ displayTopics(struct recordTag *main, int ctr)
                     {
                         printf("\nNice, your answer is CORRECT!\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                         nReturn = 1;
                     }
                     else
                     {
                         printf("\nSorry, your answer is INCORRECT.\n");
                         printf("Enter any key to continue... ");
-                        scanf("%d", &nContinue);
+                        scanf(" %c", &cContinue);
                     }
                     break;
                 case '0':
@@ -1191,8 +1251,8 @@ displayScores(struct scoreTag *score)
     struct scoreTag temp;
     int ctr = 0; // this counts how many player name and scores have been stored
     int i = 0;
-    int nBack;
     int nContent = 0;
+    char cBack;
     FILE *fp;
 
     fp = fopen("score.txt", "r");
@@ -1202,7 +1262,6 @@ displayScores(struct scoreTag *score)
     {
         fscanf(fp, "%s\n", score[i].playerName);
         fscanf(fp, "%d\n\n", &score[i].playerScore);
-        score[i].playerRow = i + 1;
         ctr++;
         i++;
     }
@@ -1236,14 +1295,14 @@ displayScores(struct scoreTag *score)
     // if file has content, enter this condition
     if(nContent)
     {
-        printf("     %-11s %-10s %10s %8s\n", "RANK", "NAME", "SCORE", "ROW");
+        printf("        %-15s %-10s %10s\n", "RANK", "NAME", "SCORE");
         for(int j = 0; j < ctr; j++)
         {
-            printf("       %-9d %-11s %7d %9d\n", j+1, score[j].playerName, score[j].playerScore, score[j].playerRow);
+            printf("          %-13d %-11s %7d\n", j+1, score[j].playerName, score[j].playerScore);
         }
         printf("\n----------------------------------------------------\n");
         printf("Enter any key to go back... ");
-        scanf("%d", &nBack);
+        scanf(" %c", &cBack);
     }
     // if file has no content, this will be displayed
     else
@@ -1251,7 +1310,7 @@ displayScores(struct scoreTag *score)
         printf("No scores to display.\n");
         printf("\n----------------------------------------------------\n");
         printf("\nEnter any key to go back... ");
-        scanf("%d", &nBack);
+        scanf(" %c", &cBack);
     }
 
 
@@ -1265,16 +1324,16 @@ displayScores(struct scoreTag *score)
 void
 displayMainMenu()
 {
+    struct recordTag recordMain[20];
     int nMenuChoice;
     int nExit = 0;
     int nExitChoice = 0;
-    int nBack;
-
-    struct recordTag recordMain[20];
     int ctrRecord = 0; // counter for how many records have been stored
     int ctr = 0; 
     int index = 0;
     int nIndex = 0;
+    char cBack;
+    strcpy(recordMain[0].topic, ""); 
 
     do
     {
@@ -1312,7 +1371,7 @@ displayMainMenu()
                 // input is not in the choices
                 printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back... ");
-                scanf("%d", &nBack);
+                scanf(" %c", &cBack);
                 break;
         }
     }while(nExit == 0);
@@ -1332,7 +1391,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
     int nStop1 = 0, nStop2 = 0;
     int nContinue = 0;
     int nChoice = 0;
-    int nBack = 0;
+    char cBack;
     int nAdd = 0; // return 0 if record is existing, return 1 if record is added
     int nDelete = 0; // return 0 if no record was deleted, return the number of records deleted
     int nImport = 0; // number of records imported
@@ -1424,7 +1483,7 @@ displayManageData(struct recordTag *recordMain, int ctr)
                 default:
                     printf("\nINVALID INPUT!\n");
                     printf("Enter any key to go back... ");
-                    scanf("%d", &nBack);
+                    scanf(" %c", &cBack);
             }
         }while(nStop2 != 1);
     }
@@ -1447,8 +1506,8 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
     struct scoreTag score[20]; // up to 20 players
     int nChoice;
     int nExit = 0;
-    int nBack;
     int nPlayers;
+    char cBack;
     FILE *fpScore;
 
     fpScore = fopen("score.txt", "a");
@@ -1488,7 +1547,7 @@ displayPlayGame(int index, struct recordTag *recordMain, int ctr)
             default:
                 printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back... ");
-                scanf("%d", &nBack);
+                scanf(" %c", &cBack);
                 break;
         }
 
@@ -1510,7 +1569,7 @@ int
 displayExit(int nExitChoice)
 {
     int nChoice;
-    int nBack;
+    char cBack;
 
     do
     {
@@ -1540,7 +1599,7 @@ displayExit(int nExitChoice)
             default:
                 printf("\nINVALID INPUT!\n");
                 printf("Enter any key to go back...\n");
-                scanf("%d", &nBack);
+                scanf(" %c", &cBack);
                 break;
         }
     } while(nExitChoice == 0);
