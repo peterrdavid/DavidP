@@ -31,8 +31,8 @@
                 "text": "Web Application"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -129,16 +129,43 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": [],
+              "threats": [
+                {
+                  "id": "2c21abf5-c13a-4776-9930-2cec3f178a83",
+                  "title": "Web Application Spoofing",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Spoofing",
+                  "description": "The web application may be spoofed by an attacker and this may lead to unauthorized access to the browser client.",
+                  "mitigation": "",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                },
+                {
+                  "id": "cccc7dec-3c4e-4059-99f5-79b22a05d11b",
+                  "title": "Missing Web Application Logging",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Repudiation",
+                  "description": "The web application claims that it did not receive data from a process on the other side of the trust boundary.",
+                  "mitigation": "Consider using logging or auditing to record the source, time and a summary of the received data.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 14,
+                  "score": ""
+                }
+              ],
               "threatFrequency": {
-                "spoofing": 0,
+                "spoofing": 1,
                 "tampering": 0,
-                "repudiation": 0,
+                "repudiation": 1,
                 "informationDisclosure": 0,
                 "denialOfService": 0,
                 "elevationOfPrivilege": 0
@@ -385,124 +412,7 @@
           },
           {
             "position": {
-              "x": 990,
-              "y": 24.999999999999886
-            },
-            "size": {
-              "width": 200,
-              "height": 140
-            },
-            "attrs": {
-              "text": {
-                "text": "LDAP"
-              },
-              "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
-                "strokeDasharray": null
-              }
-            },
-            "visible": true,
-            "shape": "actor",
-            "zIndex": 5,
-            "ports": {
-              "groups": {
-                "top": {
-                  "position": "top",
-                  "attrs": {
-                    "circle": {
-                      "r": 4,
-                      "magnet": true,
-                      "stroke": "#5F95FF",
-                      "strokeWidth": 1,
-                      "fill": "#fff",
-                      "style": {
-                        "visibility": "hidden"
-                      }
-                    }
-                  }
-                },
-                "right": {
-                  "position": "right",
-                  "attrs": {
-                    "circle": {
-                      "r": 4,
-                      "magnet": true,
-                      "stroke": "#5F95FF",
-                      "strokeWidth": 1,
-                      "fill": "#fff",
-                      "style": {
-                        "visibility": "hidden"
-                      }
-                    }
-                  }
-                },
-                "bottom": {
-                  "position": "bottom",
-                  "attrs": {
-                    "circle": {
-                      "r": 4,
-                      "magnet": true,
-                      "stroke": "#5F95FF",
-                      "strokeWidth": 1,
-                      "fill": "#fff",
-                      "style": {
-                        "visibility": "hidden"
-                      }
-                    }
-                  }
-                },
-                "left": {
-                  "position": "left",
-                  "attrs": {
-                    "circle": {
-                      "r": 4,
-                      "magnet": true,
-                      "stroke": "#5F95FF",
-                      "strokeWidth": 1,
-                      "fill": "#fff",
-                      "style": {
-                        "visibility": "hidden"
-                      }
-                    }
-                  }
-                }
-              },
-              "items": [
-                {
-                  "group": "top",
-                  "id": "902c4d5e-1118-4a60-bdb3-899d5e5d90c0"
-                },
-                {
-                  "group": "right",
-                  "id": "25ece2dc-2038-4226-9ac7-2d9497263761"
-                },
-                {
-                  "group": "bottom",
-                  "id": "eba70bc2-6f58-4026-ac14-49d8f3a12c63"
-                },
-                {
-                  "group": "left",
-                  "id": "15940d93-0131-4f99-af9b-75bfec824554"
-                }
-              ]
-            },
-            "id": "66a6b2eb-3f50-4793-98c3-b7e440406c40",
-            "data": {
-              "type": "tm.Actor",
-              "name": "LDAP",
-              "description": "",
-              "isTrustBoundary": false,
-              "outOfScope": false,
-              "reasonOutOfScope": "",
-              "hasOpenThreats": false,
-              "providesAuthentication": false,
-              "threats": []
-            }
-          },
-          {
-            "position": {
-              "x": 1060,
+              "x": 1100,
               "y": 345
             },
             "size": {
@@ -514,11 +424,13 @@
                 "text": "SQL Database"
               },
               "topLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -615,20 +527,54 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isALog": false,
               "isEncrypted": false,
               "isSigned": false,
               "storesCredentials": false,
               "storesInventory": false,
-              "threats": []
+              "threats": [
+                {
+                  "id": "09646342-0148-4bca-b55e-0d5e797153a8",
+                  "title": "Malicious SQL Code Injection",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "SQL injection is an attack in which malicious code is inserted into strings that are later passed to an instance of SQL Server for parsing and execution.",
+                  "mitigation": "",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                },
+                {
+                  "id": "30db6c72-85ae-4406-82de-1dc4b6b37e48",
+                  "title": "Unverified SQL Database Data Writes",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Repudiation",
+                  "description": "The SQL Database claims that it did not write data received from an entity on the other side of the trust boundary.",
+                  "mitigation": "Consider using logging or auditing to record the source, time and a summary of the received data.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 13,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             }
           },
           {
             "shape": "flow",
             "attrs": {
               "line": {
-                "stroke": "#333333",
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "targetMarker": {
                   "name": "block"
                 },
@@ -649,13 +595,45 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isBidirectional": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
               "protocol": "",
-              "threats": [],
-              "trustBoundaryIds": []
+              "threats": [
+                {
+                  "id": "b3b930ab-1b58-4c27-99d5-4218dbe707b5",
+                  "title": "Feedback Data Tampering",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "Data flowing across saved feedback comments may be tampered with by an attacker. Failure to verify that input is as expected is a root cause of a very large number of exploitable issues.",
+                  "mitigation": "Consider all paths and the way they handle data. Verify that all input is verified for correctness using an approved-list input validation approach.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 12,
+                  "score": ""
+                },
+                {
+                  "id": "4e14e844-2c69-46b2-b2a7-63be9491834e",
+                  "title": "Sensitive Feedback Data Disclosure",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Information disclosure",
+                  "description": "Data flowing across saved feedback comments may be sniffed by an attacker. Depending on what type of data an attacker can read, it may be used to attack other parts of the system or simply be a disclosure of information leading to compliance violations.",
+                  "mitigation": "Consider encrypting the data flow.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 16,
+                  "score": ""
+                }
+              ],
+              "trustBoundaryIds": [],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 1,
+                "denialOfService": 0
+              }
             },
             "labels": [
               "Insert Feedback Comments"
@@ -1273,12 +1251,191 @@
               "y": 80
             },
             "vertices": []
+          },
+          {
+            "position": {
+              "x": 1010,
+              "y": 24.999999999999886
+            },
+            "size": {
+              "width": 120,
+              "height": 170
+            },
+            "attrs": {
+              "text": {
+                "text": "LDAP"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "1c2f7c9c-9ac5-4c8b-bb36-10a15cd22317"
+                },
+                {
+                  "group": "right",
+                  "id": "2788dbac-2d9e-48d1-8fee-f63730ebe1d2"
+                },
+                {
+                  "group": "bottom",
+                  "id": "bfd5aaa1-7c97-4150-a987-388437a113c2"
+                },
+                {
+                  "group": "left",
+                  "id": "43ddd463-1b82-4ade-be39-b7bc7a951a53"
+                }
+              ]
+            },
+            "id": "1870b2f6-5b0a-41fb-bd7a-f4b33e77e227",
+            "zIndex": 11,
+            "data": {
+              "type": "tm.Store",
+              "name": "LDAP",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "696e6985-3840-42ef-9836-1041deb86451",
+                  "title": "LDAP Injection",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "LDAP injection is possible, as the user authentication is verified using an LDAP query.",
+                  "mitigation": "",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                },
+                {
+                  "id": "6e91bf64-5dc2-4f04-9643-0a0daf781b3a",
+                  "title": "Missing LDAP Write Logging",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Repudiation",
+                  "description": "LDAP claims that it did not write data received from an entity on the other side of the trust boundary.",
+                  "mitigation": "Consider using logging or auditing to record the source, time and a summary of the received data.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 15,
+                  "score": ""
+                },
+                {
+                  "id": "5a0b0852-cc65-4deb-8883-4cbf14349417",
+                  "title": "Unauthorized Data Access in LDAP Directory",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Information disclosure",
+                  "description": "Improper data protection of LDAP can allow an attacker to read information not intended for disclosure.",
+                  "mitigation": "Review authorization settings",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 17,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 1,
+                "informationDisclosure": 1,
+                "denialOfService": 0
+              }
+            },
+            "tools": {
+              "items": [
+                "boundary",
+                "button-remove"
+              ],
+              "name": null
+            }
           }
         ]
       }
     ],
     "diagramTop": 2,
     "reviewer": "",
-    "threatTop": 6
+    "threatTop": 17
   }
 }
