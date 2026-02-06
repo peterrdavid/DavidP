@@ -11,7 +11,7 @@
     "diagrams": [
       {
         "id": 0,
-        "title": "New CIA diagram",
+        "title": "Data Flow Diagram",
         "diagramType": "CIA",
         "placeholder": "New CIA diagram description",
         "thumbnail": "./public/content/images/thumbnail.cia.jpg",
