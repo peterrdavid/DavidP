@@ -1363,8 +1363,8 @@
                 "text": "Web Application"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1461,26 +1461,20 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": [
-                {
-                  "id": "f0c38db3-d628-4248-8702-f60ed18bd8d0",
-                  "title": "New CIA threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Confidentiality",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "CIA",
-                  "new": true,
-                  "number": 3,
-                  "score": ""
-                }
-              ]
+              "threats": [],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 0
+              }
             },
             "children": []
           },
@@ -1615,8 +1609,8 @@
                 "text": "Authorization Provider"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1713,26 +1707,12 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": [
-                {
-                  "id": "c46b1c94-9214-4e5f-90af-8ad3638756b2",
-                  "title": "New CIA threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Confidentiality",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "CIA",
-                  "new": true,
-                  "number": 2,
-                  "score": ""
-                }
-              ]
+              "threats": []
             }
           },
           {
@@ -1749,8 +1729,8 @@
                 "text": "LDAP"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1847,23 +1827,9 @@
               "isTrustBoundary": false,
               "outOfScope": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "providesAuthentication": false,
-              "threats": [
-                {
-                  "id": "e51fb7df-3fda-41d4-a58b-6c3b023b6c38",
-                  "title": "New CIA threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Confidentiality",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "CIA",
-                  "new": true,
-                  "number": 1,
-                  "score": ""
-                }
-              ]
+              "threats": []
             }
           },
           {
@@ -1880,13 +1846,11 @@
                 "text": "SQL Database"
               },
               "topLine": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1983,27 +1947,13 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "isALog": false,
               "isEncrypted": false,
               "isSigned": false,
               "storesCredentials": false,
               "storesInventory": false,
-              "threats": [
-                {
-                  "id": "1d6918b9-d971-4a3a-ac9a-32b5cc1ff419",
-                  "title": "New CIA threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Confidentiality",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "CIA",
-                  "new": true,
-                  "number": 4,
-                  "score": ""
-                }
-              ]
+              "threats": []
             }
           },
           {
@@ -2608,8 +2558,7 @@
             "shape": "flow",
             "attrs": {
               "line": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
                 "targetMarker": {
                   "name": "block"
                 },
@@ -2630,29 +2579,15 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "isBidirectional": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
               "protocol": "",
-              "threats": [
-                {
-                  "id": "037b6ce3-3a83-4ee2-a561-a5180f9ce9c3",
-                  "title": "New CIA threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Confidentiality",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "CIA",
-                  "new": false,
-                  "number": 5,
-                  "score": ""
-                }
-              ],
+              "threats": [],
               "trustBoundaryIds": [],
               "threatFrequency": {
-                "confidentiality": 1,
+                "confidentiality": 0,
                 "integrity": 0,
                 "availability": 0
               }
@@ -2676,6 +2611,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "",
-    "threatTop": 5
+    "threatTop": 6
   }
 }
