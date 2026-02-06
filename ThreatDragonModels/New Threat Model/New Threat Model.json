@@ -38,6 +38,7 @@
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 2,
             "ports": {
               "groups": {
                 "top": {
@@ -121,7 +122,6 @@
               ]
             },
             "id": "4f77ab2f-fe72-47c1-8f62-ea2a341b1078",
-            "zIndex": 2,
             "data": {
               "type": "tm.Process",
               "name": "Web Application",
@@ -173,6 +173,7 @@
             },
             "visible": true,
             "shape": "actor",
+            "zIndex": 3,
             "ports": {
               "groups": {
                 "top": {
@@ -256,7 +257,6 @@
               ]
             },
             "id": "a311ea72-4b98-484a-84a4-c029bbbfe5cc",
-            "zIndex": 3,
             "data": {
               "type": "tm.Actor",
               "name": "Browser Client",
@@ -290,6 +290,7 @@
             },
             "visible": true,
             "shape": "process",
+            "zIndex": 4,
             "ports": {
               "groups": {
                 "top": {
@@ -373,7 +374,6 @@
               ]
             },
             "id": "acd9dd00-1b49-4d91-94e9-ff3873b4e2e1",
-            "zIndex": 4,
             "data": {
               "type": "tm.Process",
               "name": "Authorization Provider",
@@ -424,6 +424,7 @@
             },
             "visible": true,
             "shape": "actor",
+            "zIndex": 5,
             "ports": {
               "groups": {
                 "top": {
@@ -507,7 +508,6 @@
               ]
             },
             "id": "66a6b2eb-3f50-4793-98c3-b7e440406c40",
-            "zIndex": 5,
             "data": {
               "type": "tm.Actor",
               "name": "LDAP",
@@ -560,6 +560,7 @@
             },
             "visible": true,
             "shape": "store",
+            "zIndex": 6,
             "ports": {
               "groups": {
                 "top": {
@@ -643,7 +644,6 @@
               ]
             },
             "id": "cc0e37f4-1802-49be-b83b-52b5aed9034a",
-            "zIndex": 6,
             "data": {
               "type": "tm.Store",
               "name": "SQL Database",
